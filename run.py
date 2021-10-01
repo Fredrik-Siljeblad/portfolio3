@@ -23,7 +23,10 @@ def render_game(game):
              tile = "O"
         
         board[moves[move_nr] - 1].append(tile)
+    print("\n\n\n\n\n")
     print_board(board)
+    print("   -------------------")
+    print("   1  2  3  4  5  6  7     8) 9) 0)")
     
 def print_board(board):
     """
@@ -41,6 +44,25 @@ def print_board(board):
            
         print(print_line)
 
+def get_input():
+    try:
+        move = int(input("Make your move (1-7): "))
+        if move < 1 or move > 7:
+            move = -1
+            print("Please enter a number in the range of 1-7")
+        return move
+    except:
+        print("Please enter a single number")
+        return -1
+    
+def get_move_from_user():
+    """
+    asks for input from user, validates it and returns the validated input
+    """
+    move = -1
+    while move < 0:
+        move = get_input()
+    print("You chose to place you tile in column " + str(move))
 
 
-render_game(test_game)
+get_move_from_user()
