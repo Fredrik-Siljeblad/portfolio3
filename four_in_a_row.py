@@ -1,14 +1,8 @@
-# Your code goes here.
-# You can delete these comments, but do not change the name of this file
-# Write your code to expect a terminal of 80 characters wide and 24 rows high
-
 class Four_In_A_Row_Game:
-    """
-    The main object of the game, handling
-    """
     def __init__(self):
         self.moves = []
     
+
     def render_game(self):
         """
         takes the list of moves and turns it into a list of tiles placed on a board.
@@ -48,38 +42,3 @@ class Four_In_A_Row_Game:
                 print_line = print_line + "  " + tile
             
             print(print_line)
-
-def get_input():
-    """
-    asks for input from user, validates it and returns the validated input
-    """
-    try:
-        move = int(input("Make your move (1-7) or 0(end game): "))
-        if move < 0 or move > 7:
-            move = -1
-            print("Please enter a number in the range of 0-7")
-        return move
-    except:
-        print("Please enter a single number")
-        return -1
-    
-def get_move_from_user():
-    """
-    
-    """
-    move = -1
-    while move < 0:
-        move = get_input()
-    print("You chose to place you tile in column " + str(move))
-
-
-def main():
-    game = Four_In_A_Row_Game()
-
-main()
-
-#Proof of Concept is done - remake into OOP!
-#Why oh why don't it accept the import!
-#Need to add some checks 
-# - is the column full?
-# - did last move win the game?
