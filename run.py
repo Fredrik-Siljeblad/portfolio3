@@ -48,6 +48,16 @@ class Four_In_A_Row_Game:
         print("Goodbye, hope to see you again soon!")
         return
 
+    def full_columns(self):
+        """
+        Returns a list of columns with 6 tiles in them.
+        """
+        is_full = []
+        for column in range(1,7):
+            if self.moves.count(column) > 5:
+                is_full.append(column)
+        return is_full
+
     def play_game(self):
         """
         The main game loop.
@@ -58,7 +68,12 @@ class Four_In_A_Row_Game:
             #if it is a player (I.E. not "Computer") ask user to make a move.
             self.render_game()
             player = self.moves[(len(self.moves))%2]
-            self.user.make_move(player)
+            move = self.user.make_move(player, self.full_columns())
+            if move > 0:
+                self.moves.append(move)
+            else:
+                break
+            self.end_game()
 
     def winner(self):
         """
@@ -71,20 +86,18 @@ class Four_In_A_Row_Game:
         """
         takes the list of moves and turns it into a list of tiles placed on a board.
         """
-        #Slice the actual moves out of the game.
-        moves = self.moves
-
         #Create the board, a list of 7 lists, each representing a column.
         board = [[], [], [], [], [], [], []]
 
         #Iterate throught the moves, alternate between the player tiles
         # and place them in the correct column.
-        for move_nr in range(len(moves)):
-            if move_nr%2 == 1:
-                tile = "@"
-            else:
-                tile = "O"
-            board[moves[move_nr] - 1].append(tile)
+        if len(self.moves) > 2:
+            for move_nr in range(2, len(self.moves), 1):
+                if move_nr%2 == 1:
+                    tile = "@"
+                else:
+                    tile = "O"
+                board[self.moves[move_nr] - 1].append(tile)
 
         print("\n\n\n\n\n")
         self.print_board(board)
@@ -111,7 +124,7 @@ class User:
     """
     The human player object handles input from the console.
     """
-    def make_move(self, name):
+    def make_move(self, name, is_full):
         """
         asks for input from user, validates it and returns the validated input
         """
@@ -119,10 +132,16 @@ class User:
         while move < 0:
             try:
                 move = int(input(f"{name},  make your move (1-7) or 0 (end game): >>"))
+                if move > -1 and move < 8:
+                    if is_full.count(move):
+                        print(f"{name}, you cannot place more than six tiles in a column.")
+                        move = -1
+                    else:
+                        return move
                 if move < 0 or move > 7:
                     move = -1
                     print(f"{name}, please enter a number in the range of 0-7.")
-                return move
+
             except:
                 print("Please enter a single number.")
                 move = -1
@@ -143,3 +162,5 @@ main()
 #Need to add some checks
 # - is the column full?
 # - did last move win the game?
+# - must make each move twice, why?
+# - need to make sure that each column doesn't take more than six tiles.
