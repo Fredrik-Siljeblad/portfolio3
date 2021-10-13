@@ -2,7 +2,7 @@
 # You can delete these comments, but do not change the name of this file
 # Write your code to expect a terminal of 80 characters wide and 24 rows high
 
-class Four_In_A_Row_Game:
+class FourInARowGame:
     """
     The main object of the game, handling the game board, the moves made and so forth.
     """
@@ -104,7 +104,7 @@ class Four_In_A_Row_Game:
             max_in_row = max(max_in_row, this_max)
         #Then rows
         print("Rows:")
-        
+
         for row in self.transpose(self.board):
             this_max = self.count_row(row)
             this_max = self.count_row(row)
@@ -139,8 +139,10 @@ class Four_In_A_Row_Game:
         m_coln = len(matrix)
         m_rown = len(matrix[0])
         diagonal = []
-        for x in range(m_coln + m_rown - 1):
+        iterate_x = 0
+        while iterate_x < range(m_coln + m_rown - 1):
             diagonal.append([])
+            iterate_x += 1
         for m_row in range(m_rown):
             for m_col in range(m_coln):
                 element = matrix[m_col][m_row]
@@ -154,8 +156,10 @@ class Four_In_A_Row_Game:
         m_coln = len(matrix)
         m_rown = len(matrix[0])
         diagonal = []
-        for x in range(m_coln + m_rown - 1):
+        iterate_x = 0
+        while iterate_x < range(m_coln + m_rown - 1):
             diagonal.append([])
+            iterate_x += 1
         for m_col in range(m_coln):
             for m_row in range(m_rown):
                 element = matrix[m_col][m_row]
@@ -212,7 +216,7 @@ class Four_In_A_Row_Game:
                 self.board[self.moves[move_nr] - 1].append(tile)
         #Then we want to fill the rest of the board with " "
         for column in self.board:
-            for x in range(6 - len(column)):
+            while len(column) < 7:
                 self.board.append(" ")
 
     def print_board(self):
@@ -251,7 +255,6 @@ class User:
                 if move < 0 or move > 7:
                     move = -1
                     print(f"{name}, please enter a number in the range of 0-7.")
-
             except:
                 print("Please enter a single number.")
                 move = -1
@@ -260,7 +263,7 @@ def main():
     """
     Main function
     """
-    game = Four_In_A_Row_Game()
+    game = FourInARowGame()
     #game.welcome()
     #game.moves.append("Player O")
     #game.moves.append("Player @")
@@ -276,10 +279,5 @@ def main():
 main()
 
 #Add human player
-#Need to add some checks
 # - did last move win the game? - YAY
-# - why call end game all the time?
 # calculates new board before adding the move?
-# split render_board & print_board
-# fails to register column 2 & 6
-
