@@ -95,34 +95,21 @@ class FourInARowGame:
         Counts tiles in a row in columns, rows and both diagonals.
         """
         max_in_row = 0
-
-        #For rows, columns & both diagonals, make a row list and send to count_row()
-        print("Columns:")
+        #Columns
         for row in self.board:
             this_max = self.count_row(row)
-            self.print_row(row, this_max)
             max_in_row = max(max_in_row, this_max)
-        #Then rows
-        print("Rows:")
-
+        #Rows
         for row in self.transpose(self.board):
             this_max = self.count_row(row)
-            this_max = self.count_row(row)
-            self.print_row(row, this_max)
             max_in_row = max(max_in_row, this_max)
-
-        #Go through all "upwards" diagonals
-        print("The 'upwards' diagonals:")
+        #'Upwards' diagonals
         for row in self.up_diagonal(self.board):
             this_max = self.count_row(row)
-            this_max = self.count_row(row)
-            self.print_row(row, this_max)
             max_in_row = max(max_in_row, this_max)
-        print("The'downwards' diagonals:")
+        #'Downwards' diagonals
         for row in self.down_diagonal(self.board):
             this_max = self.count_row(row)
-            this_max = self.count_row(row)
-            self.print_row(row, this_max)
             max_in_row = max(max_in_row, this_max)
         return max_in_row
 
@@ -140,7 +127,7 @@ class FourInARowGame:
         m_rown = len(matrix[0])
         diagonal = []
         iterate_x = 0
-        while iterate_x < range(m_coln + m_rown - 1):
+        while iterate_x < (m_coln + m_rown - 1):
             diagonal.append([])
             iterate_x += 1
         for m_row in range(m_rown):
@@ -157,7 +144,7 @@ class FourInARowGame:
         m_rown = len(matrix[0])
         diagonal = []
         iterate_x = 0
-        while iterate_x < range(m_coln + m_rown - 1):
+        while iterate_x < (m_coln + m_rown - 1):
             diagonal.append([])
             iterate_x += 1
         for m_col in range(m_coln):
@@ -217,7 +204,7 @@ class FourInARowGame:
         #Then we want to fill the rest of the board with " "
         for column in self.board:
             while len(column) < 7:
-                self.board.append(" ")
+                column.append(" ")
 
     def print_board(self):
         """
@@ -229,7 +216,7 @@ class FourInARowGame:
             for column in range(7):
                 if row < len(self.board[column]):
                     tile = self.board[column][row]
-                print_line = print_line + "  " + tile
+                    print_line = print_line + "  " + tile
             print(print_line)
         print("   -------------------")
         print("   1  2  3  4  5  6  7     8) 9) 0)")
@@ -265,14 +252,14 @@ def main():
     """
     game = FourInARowGame()
     #game.welcome()
-    #game.moves.append("Player O")
-    #game.moves.append("Player @")
-    #game.play_game()
+    game.moves.append("Player O")
+    game.moves.append("Player @")
+    game.play_game()
     #game.print_row(["@", "@", "@", "@", "@"], 5)
-    matrix = [["00","01","02"], ["10","11","12"], ["20","21","22"], ["30","31","32"]]
-    diagonal = game.down_diagonal(matrix)
-    print(matrix)
-    print(diagonal)
+    #matrix = [["00","01","02"], ["10","11","12"], ["20","21","22"], ["30","31","32"]]
+    #diagonal = game.down_diagonal(matrix)
+    #print(matrix)
+    #print(diagonal)
 
 
 
@@ -281,3 +268,4 @@ main()
 #Add human player
 # - did last move win the game? - YAY
 # calculates new board before adding the move?
+# Freezes after first player move.
