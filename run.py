@@ -98,81 +98,33 @@ class Four_In_A_Row_Game:
 
         #For rows, columns & both diagonals, make a row list and send to count_row()
         print("Columns:")
-        #For some weird reason it fails to count columns
-        #unless there's 2 different tiles in it...
         for row in self.board:
             this_max = self.count_row(row)
             self.print_row(row, this_max)
             max_in_row = max(max_in_row, this_max)
         #Then rows
         print("Rows:")
-        for my_row in range(6):
-            row = []
-            for my_col in range(7):
-                try:
-                    row.append(self.board[my_col][my_row])
-                except:
-                    row.append(" ")
+        
+        for row in self.transpose(self.board):
+            this_max = self.count_row(row)
             this_max = self.count_row(row)
             self.print_row(row, this_max)
             max_in_row = max(max_in_row, this_max)
 
         #Go through all "upwards" diagonals
         print("The 'upwards' diagonals:")
-        #"0,5:0,5 - 0,0:5,5"
-        for diff in range(5,-1,-1):
-            row = []
-            for my_col in range (0,7,1):
-                my_row = diff + my_col
-                if my_row > -1 and my_row < 6:
-                    try:
-                        row.append(self.board[my_col][my_row])
-                    except:
-                        row.append(" ")
+        for row in self.up_diagonal(self.board):
+            this_max = self.count_row(row)
             this_max = self.count_row(row)
             self.print_row(row, this_max)
             max_in_row = max(max_in_row, this_max)
-        #"1,0:6,5 - 6,0:6,0"
-        for diff in range(1,6,1):
-            row = []
-            for my_col in range (1,7,1):
-                my_row = my_col - diff
-                if my_col > 0 and my_row > -1 and my_row< 6:
-                    try:
-                        row.append(self.board[my_col][my_row])
-                    except:
-                        row.append(" ")
-            this_max = self.count_row(row)
-            self.print_row(row, this_max)
-            max_in_row = max(max_in_row, this_max)
-        #Go through all "downwards" diagonals
-        #"0,5:50" - 0,0:0,0
         print("The'downwards' diagonals:")
-        for diff in range(5,-1,-1):
-            row = []
-            for my_col in range (0,6,1):
-                my_row = diff - my_col
-                if my_row > -1:
-                    try:
-                        row.append(self.board[my_col][my_row])
-                    except:
-                        row.append(" ")
+        for row in self.down_diagonal(self.board):
+            this_max = self.count_row(row)
             this_max = self.count_row(row)
             self.print_row(row, this_max)
             max_in_row = max(max_in_row, this_max)
-            #"0,5:50" - 0,0:0,0
-        for diff in range(6,-1,-1):
-            row = []
-            for my_col in range (1,7,1):
-                my_row = diff - my_col
-                if my_row > -1 and my_row < 6:
-                    try:
-                        row.append(self.board[my_col][my_row])
-                    except:
-                        row.append(" ")
-            this_max = self.count_row(row)
-            self.print_row(row, this_max)
-            max_in_row = max(max_in_row, this_max)
+        
         return max_in_row
 
     def transpose(self, matrix):
@@ -188,19 +140,41 @@ class Four_In_A_Row_Game:
         m_coln = len(matrix)
         m_rown = len(matrix[0])
         diagonal = []
-        for x in range(m_coln + m_rown):
+        for x in range(m_coln + m_rown - 1):
             diagonal.append([])
         for m_row in range(m_rown):
             for m_col in range(m_coln):
                 try:
                     element = matrix[m_col][m_row]
                    
-                except:
-                    print(f"Failed to get element {m_col}, {m_row}.")
+                except Exception as e:
+                    print(f"Error: {e}")
                 try:
                     diagonal[m_rown - 1 - m_row + m_col].append(element)
-                except:
-                    print(f"Failed to append element: {element} to diagonal {m_rown - 1 - m_row + m_col}.")
+                except Exception as e:
+                        print(f"Error: {e}")
+        return diagonal
+
+    def down_diagonal(self, matrix):
+        """
+        returns a 2D-list that contains the upper-left to lower-right diagonals of matrix
+        """
+        m_coln = len(matrix)
+        m_rown = len(matrix[0])
+        diagonal = []
+        for x in range(m_coln + m_rown - 1):
+            diagonal.append([])
+        for m_col in range(m_coln):
+            for m_row in range(m_rown):
+                try:
+                    element = matrix[m_col][m_row]
+                   
+                except Exception as e:
+                    print(f"Error: {e}")
+                try:
+                    diagonal[m_rown + m_coln - 2 - m_row - m_col].append(element)
+                except Exception as e:
+                        print(f"Error: {e}")
         return diagonal
 
     def count_row(self, row):
@@ -266,7 +240,8 @@ class Four_In_A_Row_Game:
             for column in range(7):
                 try:
                     tile = self.board[column][line]
-                except:
+                except Exception as e:
+                    print(f"Error: {e}")
                     tile = " "
 
                 print_line = print_line + "  " + tile
@@ -312,6 +287,7 @@ def main():
     #game.print_row(["@", "@", "@", "@", "@"], 5)
     matrix = [["00","01","02"], ["10","11","12"], ["20","21","22"], ["30","31","32"]]
     diagonal = game.up_diagonal(matrix)
+    print(matrix)
     print(diagonal)
 
 
