@@ -9,6 +9,7 @@ class Four_In_A_Row_Game:
     def __init__(self):
         self.moves = []
         self.user = User()
+        self.board = [[], [], [], [], [], [], []]
 
     def welcome(self):
         """
@@ -63,31 +64,183 @@ class Four_In_A_Row_Game:
         The main game loop.
         """
 
+        self.print_board()
         while not self.winner():
             #check which players turn it is
             #if it is a player (I.E. not "Computer") ask user to make a move.
-            self.render_game()
+
             player = self.moves[(len(self.moves))%2]
             move = self.user.make_move(player, self.full_columns())
             if move > 0:
                 self.moves.append(move)
+                self.render_game()
+                self.print_board()
             else:
+                self.end_game()
                 break
-            self.end_game()
 
     def winner(self):
         """
         Function to determine if the game is won
         """
-        #For testing purposes we just return 0.
-        return 0
+        if len(self.moves) < 2:
+            return 0
+        elif self.count_rows() < 4:
+            return 0
+        else:
+            return 1
+
+    def count_rows(self):
+        """
+        Counts tiles in a row in columns, rows and both diagonals.
+        """
+        max_in_row = 0
+
+        #For rows, columns & both diagonals, make a row list and send to count_row()
+        print("Columns:")
+        #For some weird reason it fails to count columns
+        #unless there's 2 different tiles in it...
+        for row in self.board:
+            this_max = self.count_row(row)
+            self.print_row(row, this_max)
+            max_in_row = max(max_in_row, this_max)
+        #Then rows
+        print("Rows:")
+        for my_row in range(6):
+            row = []
+            for my_col in range(7):
+                try:
+                    row.append(self.board[my_col][my_row])
+                except:
+                    row.append(" ")
+            this_max = self.count_row(row)
+            self.print_row(row, this_max)
+            max_in_row = max(max_in_row, this_max)
+
+        #Go through all "upwards" diagonals
+        print("The 'upwards' diagonals:")
+        #"0,5:0,5 - 0,0:5,5"
+        for diff in range(5,-1,-1):
+            row = []
+            for my_col in range (0,7,1):
+                my_row = diff + my_col
+                if my_row > -1 and my_row < 6:
+                    try:
+                        row.append(self.board[my_col][my_row])
+                    except:
+                        row.append(" ")
+            this_max = self.count_row(row)
+            self.print_row(row, this_max)
+            max_in_row = max(max_in_row, this_max)
+        #"1,0:6,5 - 6,0:6,0"
+        for diff in range(1,6,1):
+            row = []
+            for my_col in range (1,7,1):
+                my_row = my_col - diff
+                if my_col > 0 and my_row > -1 and my_row< 6:
+                    try:
+                        row.append(self.board[my_col][my_row])
+                    except:
+                        row.append(" ")
+            this_max = self.count_row(row)
+            self.print_row(row, this_max)
+            max_in_row = max(max_in_row, this_max)
+        #Go through all "downwards" diagonals
+        #"0,5:50" - 0,0:0,0
+        print("The'downwards' diagonals:")
+        for diff in range(5,-1,-1):
+            row = []
+            for my_col in range (0,6,1):
+                my_row = diff - my_col
+                if my_row > -1:
+                    try:
+                        row.append(self.board[my_col][my_row])
+                    except:
+                        row.append(" ")
+            this_max = self.count_row(row)
+            self.print_row(row, this_max)
+            max_in_row = max(max_in_row, this_max)
+            #"0,5:50" - 0,0:0,0
+        for diff in range(6,-1,-1):
+            row = []
+            for my_col in range (1,7,1):
+                my_row = diff - my_col
+                if my_row > -1 and my_row < 6:
+                    try:
+                        row.append(self.board[my_col][my_row])
+                    except:
+                        row.append(" ")
+            this_max = self.count_row(row)
+            self.print_row(row, this_max)
+            max_in_row = max(max_in_row, this_max)
+        return max_in_row
+
+    def transpose(self, matrix):
+        """
+        returns transposed matrix
+        """
+        return list(map(list, zip(*matrix)))
+
+    def up_diagonal(self, matrix):
+        """
+        returns a 2D-list that contains the lower-left to upper-right diagonals of matrix
+        """
+        m_coln = len(matrix)
+        m_rown = len(matrix[0])
+        diagonal = []
+        for x in range(m_coln + m_rown):
+            diagonal.append([])
+        for m_row in range(m_rown):
+            for m_col in range(m_coln):
+                try:
+                    element = matrix[m_col][m_row]
+                   
+                except:
+                    print(f"Failed to get element {m_col}, {m_row}.")
+                try:
+                    diagonal[m_rown - 1 - m_row + m_col].append(element)
+                except:
+                    print(f"Failed to append element: {element} to diagonal {m_rown - 1 - m_row + m_col}.")
+        return diagonal
+
+    def count_row(self, row):
+        """
+        Function that returns the maximum number of continous tiles in a given row
+        """
+        last_tile = " "
+        max_in_row = 0
+        in_row = 0
+        for tile in row:
+            if tile == " ":
+                max_in_row = max(in_row, max_in_row)
+                last_tile = tile
+                in_row = 0
+            elif tile != last_tile:
+                max_in_row = max(in_row, max_in_row)
+                last_tile = tile
+                in_row = 1
+            else:
+                in_row += 1
+        return max(in_row, max_in_row)
+
+    def print_row(self, row, my_max):
+        """
+        Function mainly for debugging
+        """
+        if my_max == 0:
+            return
+        to_print = ", Row: "
+        for element in row:
+            to_print += str(element)
+        to_print = f"Max: {my_max} " + to_print
+        print(to_print)
 
     def render_game(self):
         """
         takes the list of moves and turns it into a list of tiles placed on a board.
         """
-        #Create the board, a list of 7 lists, each representing a column.
-        board = [[], [], [], [], [], [], []]
+        #Clean the board, a list of 7 lists, each representing a column.
+        self.board = [[], [], [], [], [], [], []]
 
         #Iterate throught the moves, alternate between the player tiles
         # and place them in the correct column.
@@ -97,28 +250,29 @@ class Four_In_A_Row_Game:
                     tile = "@"
                 else:
                     tile = "O"
-                board[self.moves[move_nr] - 1].append(tile)
+                self.board[self.moves[move_nr] - 1].append(tile)
+        #Then we want to fill the rest of the board with " "
+        for column in self.board:
+            for x in range(6 - len(column)):
+                self.board.append(" ")
 
-        print("\n\n\n\n\n")
-        self.print_board(board)
-        print("   -------------------")
-        print("   1  2  3  4  5  6  7     8) 9) 0)")
-
-    def print_board(self, board):
+    def print_board(self):
         """
         takes the list of the board and prints it in a somewhat pleasing format.
         """
+        print("\n\n\n\n\n")
         for line in range(5, -1, -1):
             print_line = " "
             for column in range(7):
                 try:
-                    tile = board[column][line]
+                    tile = self.board[column][line]
                 except:
                     tile = " "
 
                 print_line = print_line + "  " + tile
-
             print(print_line)
+        print("   -------------------")
+        print("   1  2  3  4  5  6  7     8) 9) 0)")
 
 class User:
     """
@@ -151,16 +305,24 @@ def main():
     Main function
     """
     game = Four_In_A_Row_Game()
-    game.welcome()
+    #game.welcome()
+    #game.moves.append("Player O")
+    #game.moves.append("Player @")
+    #game.play_game()
+    #game.print_row(["@", "@", "@", "@", "@"], 5)
+    matrix = [["00","01","02"], ["10","11","12"], ["20","21","22"], ["30","31","32"]]
+    diagonal = game.up_diagonal(matrix)
+    print(diagonal)
+
 
 
 main()
 
-#Proof of Concept is done - remake into OOP!
 #Add human player
-
 #Need to add some checks
-# - is the column full?
-# - did last move win the game?
-# - must make each move twice, why?
-# - need to make sure that each column doesn't take more than six tiles.
+# - did last move win the game? - YAY
+# - why call end game all the time?
+# calculates new board before adding the move?
+# split render_board & print_board
+# fails to register column 2 & 6
+
