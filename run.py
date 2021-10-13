@@ -124,7 +124,6 @@ class Four_In_A_Row_Game:
             this_max = self.count_row(row)
             self.print_row(row, this_max)
             max_in_row = max(max_in_row, this_max)
-        
         return max_in_row
 
     def transpose(self, matrix):
@@ -144,15 +143,8 @@ class Four_In_A_Row_Game:
             diagonal.append([])
         for m_row in range(m_rown):
             for m_col in range(m_coln):
-                try:
-                    element = matrix[m_col][m_row]
-                   
-                except Exception as e:
-                    print(f"Error: {e}")
-                try:
-                    diagonal[m_rown - 1 - m_row + m_col].append(element)
-                except Exception as e:
-                        print(f"Error: {e}")
+                element = matrix[m_col][m_row]
+                diagonal[m_rown - 1 - m_row + m_col].append(element)
         return diagonal
 
     def down_diagonal(self, matrix):
@@ -166,15 +158,8 @@ class Four_In_A_Row_Game:
             diagonal.append([])
         for m_col in range(m_coln):
             for m_row in range(m_rown):
-                try:
-                    element = matrix[m_col][m_row]
-                   
-                except Exception as e:
-                    print(f"Error: {e}")
-                try:
-                    diagonal[m_rown + m_coln - 2 - m_row - m_col].append(element)
-                except Exception as e:
-                        print(f"Error: {e}")
+                element = matrix[m_col][m_row]
+                diagonal[m_rown + m_coln - 2 - m_row - m_col].append(element)
         return diagonal
 
     def count_row(self, row):
@@ -286,7 +271,7 @@ def main():
     #game.play_game()
     #game.print_row(["@", "@", "@", "@", "@"], 5)
     matrix = [["00","01","02"], ["10","11","12"], ["20","21","22"], ["30","31","32"]]
-    diagonal = game.up_diagonal(matrix)
+    diagonal = game.down_diagonal(matrix)
     print(matrix)
     print(diagonal)
 
