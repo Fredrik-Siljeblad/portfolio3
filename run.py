@@ -220,15 +220,11 @@ class Four_In_A_Row_Game:
         takes the list of the board and prints it in a somewhat pleasing format.
         """
         print("\n\n\n\n\n")
-        for line in range(5, -1, -1):
+        for row in range(5, -1, -1):
             print_line = " "
             for column in range(7):
-                try:
-                    tile = self.board[column][line]
-                except Exception as e:
-                    print(f"Error: {e}")
-                    tile = " "
-
+                if row < len(self.board[column]):
+                    tile = self.board[column][row]
                 print_line = print_line + "  " + tile
             print(print_line)
         print("   -------------------")
