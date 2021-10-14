@@ -30,7 +30,7 @@ class FourInARowGame:
         """
         print("Please pick one of the following choiches:")
         print("0) Exit game  1) Play a game")
-        user_input = input("Enter a choice. >>")
+        user_input = input(" >> ")
 
         # 0. End game
         if user_input == "0":
@@ -42,8 +42,10 @@ class FourInARowGame:
             print("If entering 'Computer' as name of either player the moves of")
             print("that player will be made by the computer.")
             self.moves.clear()
-            self.moves.append(input("Enter name of Player One. >>"))
-            self.moves.append(input("Enter name of Player Two. >>"))
+            print("Enter name of Player One.")
+            self.moves.append(input(". >> "))
+            print("Enter name of Player Two.")
+            self.moves.append(input(" >> "))
             self.play_game()
             return
         # Any other input.
@@ -101,9 +103,9 @@ class FourInARowGame:
         print("8) undo last move or 0) return to start menu")
         choice = input(" >>")
         while choice != "8" and choice != "0":
-            choice = input("Please enter '8' or '0' >>")
+            print("Please enter '8' or '0' >>")
+            choice = input(" >> ")
         if choice == "8":
-            print("Debug - your choice: 8, undo and return to playing.")
             self.undo_move()
             self.play_game()
         if choice == "0":
@@ -292,7 +294,7 @@ class User:
         while move < 0:
             try:
                 print(f"{name},  make your move (1-7), 8 (undo last move) or 0 (end game): >>")
-                move = int(input(" >>"))
+                move = int(input(" >> "))
                 if move > -1 and move < 9:
                     if is_full.count(move):
                         print(f"{name}, you cannot place more than six tiles in a column.")
