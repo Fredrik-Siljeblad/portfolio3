@@ -1,6 +1,11 @@
 # Your code goes here.
 # You can delete these comments, but do not change the name of this file
 # Write your code to expect a terminal of 80 characters wide and 24 rows high
+
+"""
+A python project for a command-line four-in-a-row game
+"""
+
 import random
 
 class FourInARowGame:
@@ -75,7 +80,9 @@ class FourInARowGame:
                 move = self.computer.make_move(player, self.full_columns())
             else:
                 move = self.user.make_move(player, self.full_columns())
-            if move > 0:
+            if move == 8:
+                self.undo_move()
+            elif move > 0:
                 self.moves.append(move)
                 self.print_board(self.render_game(self.moves))
             else:
@@ -243,6 +250,14 @@ class FourInARowGame:
         print("   -------------------")
         print("   1  2  3  4  5  6  7     8) 9) 0)")
 
+    def undo_move(self):
+        """
+        Removes the last two moves then prints the board again.
+        """
+        self.moves.pop()
+        self.moves.pop()
+        self.print_board(self.render_game(self.moves))
+
 class User:
     """
     The human player object handles input from the console.
@@ -254,17 +269,18 @@ class User:
         move = -1
         while move < 0:
             try:
-                move = int(input(f"{name},  make your move (1-7) or 0 (end game): >>"))
-                if move > -1 and move < 8:
+                print(f"{name},  make your move (1-7), 9 (undo last move) or 0 (end game): >>")
+                move = int(input(" >>"))
+                if move > -1 and move < 9:
                     if is_full.count(move):
                         print(f"{name}, you cannot place more than six tiles in a column.")
                         move = -1
                     else:
                         return move
-                if move < 0 or move > 7:
+                if move < 0 or move > 8:
                     move = -1
                     print(f"{name}, please enter a number in the range of 0-7.")
-            except:
+            except: # pylint: disable=bare-except
                 print("Please enter a single number.")
                 move = -1
 
@@ -301,6 +317,7 @@ class Computer:
     def evaluate_move2(self, move, moves, move_values):
         """
         An attempt at using recursion to find the best move
+        As of now not used
         """
         #to use this change the evaluation numbers to where 0 is average.
         my_moves = moves.copy()
@@ -315,7 +332,7 @@ class Computer:
                 #This branch leads to victory
                 return my_move_values
             else:
-                move_evaluation = evaluate_move(index, my_moves)
+                move_evaluation = self.evaluate_move(index, my_moves)
                 if move_evaluation == -1:
                     if my_move_values[0]%2:
                         #Opponent wins
@@ -327,7 +344,6 @@ class Computer:
                 else:
                     my_move_values[index] += move_evaluation
                 self.evaluate_move2(index, my_moves, move_values)
-
 
     def evaluate_move(self, move, moves):
         """
@@ -465,7 +481,7 @@ def main():
     """
     game = FourInARowGame()
     #game.welcome()
-    game.moves.append("Computer")
+    game.moves.append("Fredrik - O")
     game.moves.append("Computer")
     game.play_game()
     #game.print_row(["@", "@", "@", "@", "@"], 5)
@@ -488,3 +504,5 @@ main()
 # debug messages commented out, remove before deploying.
 # possibly rewrite the computer player logic a bit to see if I can take advandage
 # of recursion.
+# ----undo
+# does not redraw the game.
