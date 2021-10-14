@@ -37,7 +37,6 @@ class FourInARowGame:
             self.end_game()
             return
         # 1. Play game
-        # 2. - Perhaps - if the name is "Computer" make the computer play.
         elif user_input == "1":
             print("If entering 'Computer' as name of either player the moves of")
             print("that player will be made by the computer.")
@@ -52,23 +51,6 @@ class FourInARowGame:
         else:
             print("You need to make a valid choice.")
             self.start_game_menu()
-
-    def end_game(self):
-        """
-        Ends the game
-        """
-        print("Goodbye, hope to see you again soon!")
-        quit()
-
-    def full_columns(self):
-        """
-        Returns a list of columns with 6 tiles in them.
-        """
-        is_full = []
-        for column in range(1,7):
-            if self.moves.count(column) > 5:
-                is_full.append(column)
-        return is_full
 
     def play_game(self):
         """
@@ -111,7 +93,22 @@ class FourInARowGame:
         if choice == "0":
             self.start_game_menu()
 
+    def end_game(self):
+        """
+        Ends the game
+        """
+        print("Goodbye, hope to see you again soon!")
+        quit()
 
+    def full_columns(self):
+        """
+        Returns a list of columns with 6 tiles in them.
+        """
+        is_full = []
+        for column in range(1,7):
+            if self.moves.count(column) > 5:
+                is_full.append(column)
+        return is_full
 
     def winner(self):
         """
@@ -223,18 +220,6 @@ class FourInARowGame:
             else:
                 in_row += 1
         return max(in_row, max_in_row)
-
-    def print_row(self, row, my_max):
-        """
-        Function mainly for debugging
-        """
-        if my_max == 0:
-            return
-        to_print = ", Row: "
-        for element in row:
-            to_print += str(element)
-        to_print = f"Max: {my_max} " + to_print
-        print(to_print)
 
     def render_game(self, my_moves):
         """
@@ -508,7 +493,6 @@ def main():
     #game.moves.append("Fredrik - O")
     #game.moves.append("Computer")
     game.play_game()
-    #game.print_row(["@", "@", "@", "@", "@"], 5)
     #matrix = [["00","01","02"], ["10","11","12"], ["20","21","22"], ["30","31","32"]]
     #diagonal = game.down_diagonal(matrix)
     #print(matrix)
