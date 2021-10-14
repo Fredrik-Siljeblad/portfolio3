@@ -36,7 +36,6 @@ class FourInARowGame:
         # 0. End game
         if user_input == "0":
             self.end_game()
-            return
         # 1. Play game
         elif user_input == "1":
             print("If entering 'Computer' as name of either player the moves of")
@@ -66,13 +65,11 @@ class FourInARowGame:
         self.print_board(self.render_game(self.moves))
         while not self.winner():
             #check which players turn it is
-            #if it is a player (I.E. not "Computer") ask user to make a move.
             player = self.moves[(len(self.moves))%2]
             if player == self.moves[0]:
                 opponent = self.moves[1]
             else:
                 opponent = self.moves[0]
-
             if player == "Computer":
                 if opponent == "Computer":
                     input("Press <Enter> to continue.")
@@ -95,16 +92,24 @@ class FourInARowGame:
         Menu that shows when the game is won. Allows to undo last move or return to start
         """
         print("The game is over, please make a choice:")
-        print("8) undo last move or 0) return to start menu")
-        choice = input(" >>")
-        while choice != "8" and choice != "0":
-            print("Please enter '8' or '0' >>")
-            choice = input(" >> ")
-        if choice == "8":
-            self.undo_move()
-            self.play_game()
-        if choice == "0":
-            self.start_game_menu()
+        print("8) Undo last move, 9) Save the game 0) Return to start menu.")
+        choice = -1
+        while choice < 0 :
+            try:
+                choice = int(input(" >>"))
+                if choice == 8:
+                    self.undo_move()
+                    self.play_game()
+                elif choice == 9:
+                    self.save_game()
+                    print("Game Saved.")
+                    self.start_game_menu()
+                elif choice == 0:
+                    self.start_game_menu()
+                else:
+                    choice = -1
+            except: # pylint: disable=bare-except
+                choice = -1
 
     def end_game(self):
         """
@@ -133,10 +138,28 @@ class FourInARowGame:
         """
         Lets the user pick up the loaded game at the saved point.
         """
-        self.moves = self.get_game_from_file()
+        self.moves = self.get_game_from_file("continue playing")
         self.play_game()
 
-    def get_game_from_file(self):
+    def view_replay(self):
+        """
+        Load a saved game from the save-file, and shows the replay one
+        move at a time
+        """
+        replay_moves = self.get_game_from_file("watch replay")
+        replay = []
+        replay.append(replay_moves[0])
+        replay.append(replay_moves[1])
+        for index in range(2, len(replay_moves)-1):
+            player = replay[index%2]
+            column = replay_moves[index]
+            replay.append(column)
+            self.print_board(self.render_game(replay))
+            print(f"{player} plays column {column}.")
+            input("<Enter> to continue")
+        self.start_game_menu()
+
+    def get_game_from_file(self, msg):
         """
         Allows the player to select a saved game and returns its moves
         """
@@ -150,38 +173,20 @@ class FourInARowGame:
         for moves in saved_games:
             player_1 = moves[0]
             player_2 = moves[1]
-            nr_of_moves = len(moves)
+            nr_of_moves = len(moves) - 2
             print(f"{index}) - {player_1} vs {player_2}, {nr_of_moves} moves made.")
             index += 1
         choice = -1
         while choice < 0:
-            print(f"Please choose game to continue/watch (0-{len(saved_games) - 1}).")
+            print(f"Please choose game to {msg} (0-{len(saved_games) - 1}).")
             choice = input(" >> ")
             try:
                 choice = int(choice)
-                if choice > 9:
+                if choice > len(saved_games) - 1:
                     choice = -1
             except: # pylint: disable=bare-except
                 choice = -1
         return saved_games[choice]
-
-    def view_replay(self):
-        """
-        Load a saved game from the save-file, and shows the replay one
-        move at a time
-        """
-        replay_moves = self.get_game_from_file()
-        replay = []
-        replay.append(replay_moves[0])
-        replay.append(replay_moves[1])
-        for index in range(2, len(replay_moves)-1):
-            player = replay[index%2]
-            column = replay_moves[index]
-            replay.append(column)
-            self.print_board(self.render_game(replay))
-            print(f"{player} plays column {column}.")
-            input("<Enter> to continue")
-        self.start_game_menu()
 
     def full_columns(self):
         """
