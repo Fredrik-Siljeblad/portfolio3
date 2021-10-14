@@ -7,6 +7,7 @@ A python project for a command-line four-in-a-row game
 """
 
 import random
+import json
 
 class FourInARowGame:
     """
@@ -14,7 +15,7 @@ class FourInARowGame:
     """
     def __init__(self):
         self.moves = []
-        self.user = User()
+        self.user = User(self)
         self.computer = Computer(self)
 
     def welcome(self):
@@ -42,7 +43,7 @@ class FourInARowGame:
             print("that player will be made by the computer.")
             self.moves.clear()
             print("Enter name of Player One.")
-            self.moves.append(input(". >> "))
+            self.moves.append(input(" >> "))
             print("Enter name of Player Two.")
             self.moves.append(input(" >> "))
             self.play_game()
@@ -69,12 +70,13 @@ class FourInARowGame:
                 move = self.user.make_move(player, self.full_columns())
             if move == 8:
                 self.undo_move()
-            elif move > 0:
-                self.moves.append(move)
-                self.print_board(self.render_game(self.moves))
-            else:
+            elif move == 0:
                 self.start_game_menu()
                 break
+            else:
+                self.moves.append(move)
+                self.print_board(self.render_game(self.moves))
+
         self.end_of_game_menu()
 
     def end_of_game_menu(self):
@@ -99,6 +101,23 @@ class FourInARowGame:
         """
         print("Goodbye, hope to see you again soon!")
         quit()
+
+    def save_game(self):
+        """
+        Saves the current game into the save4.json file.
+        Only the last 10 saved games will be retained.
+        """
+        try:
+            with open("save4.json", encoding="UTF-8") as json_file:
+                saved_games = json.load(json_file)
+        except: # pylint: disable=bare-except
+            saved_games = []
+        saved_games.append(self.moves)
+        while len(saved_games) > 10:
+            saved_games.pop(0)
+        with open("save4.json",mode="w", encoding="UTF-8") as outfile:
+            json.dump(saved_games, outfile)
+
 
     def full_columns(self):
         """
@@ -257,7 +276,7 @@ class FourInARowGame:
                     print_line = print_line + "  " + tile
             print(print_line)
         print("   -------------------")
-        print("   1  2  3  4  5  6  7     8) 9) 0)")
+        print("   1  2  3  4  5  6  7")
 
     def undo_move(self):
         """
@@ -271,27 +290,38 @@ class User:
     """
     The human player object handles input from the console.
     """
+    def __init__(self, game):
+        self.game = game
+
     def make_move(self, name, is_full):
         """
         asks for input from user, validates it and returns the validated input
         """
         move = -1
         while move < 0:
+            print(f"{name},  enter a move (1-7), undo last move (8), save game (9)")
+            print(" or return to start menu (0) (end game):")
             try:
-                print(f"{name},  make your move (1-7), 8 (undo last move) or 0 (end game): >>")
                 move = int(input(" >> "))
-                if move > -1 and move < 9:
+                print(f"Debug - move = {move}, type = {type(move)}")
+                if move == 9:
+                    print("Trying to save the game.")
+                    self.game.save_game()
+                    print("Game Saved!")
+                    move = -1
+                if move > -1 and move < 8:
                     if is_full.count(move):
                         print(f"{name}, you cannot place more than six tiles in a column.")
                         move = -1
                     else:
-                        return move
-                if move < 0 or move > 8:
+                        return int(move)
+                if move < 0 or move > 9:
                     move = -1
-                    print(f"{name}, please enter a number in the range of 0-7.")
+                    print(f"{name}, please enter a number in the range of 0-8.")
             except: # pylint: disable=bare-except
                 print("Please enter a single number.")
                 move = -1
+
 
 class Computer:
     """
@@ -489,21 +519,10 @@ def main():
     Main function
     """
     game = FourInARowGame()
-    game.welcome()
-    #game.moves.append("Fredrik - O")
-    #game.moves.append("Computer")
-    game.play_game()
-    #matrix = [["00","01","02"], ["10","11","12"], ["20","21","22"], ["30","31","32"]]
-    #diagonal = game.down_diagonal(matrix)
-    #print(matrix)
-    #print(diagonal)
-    #row = ["@", "@", "@", "@", "@"]
-    #game.computer.evaluate_row(row, "@")
-    # --- test calculate row ---
-    #print(game.computer.calculate_row_value(-1, 1, 2))
-    # --- test evaluate
-    #print("Evaluate Row returns:")
-    #print(game.computer.evaluate_row([" ", "@", "@", "@", "O", " "], "@"))
+    #game.welcome()
+    #game.play_game()
+    game.moves= ["Fredrik - O", "Computer", 4, 4, 4, 4, 2, 4, 7, 6, 1]
+    game.load_game()
 
 
 main()
