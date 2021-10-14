@@ -30,7 +30,7 @@ class FourInARowGame:
         Start menu of the game
         """
         print("Please pick one of the following choiches:")
-        print("0) Exit game  1) Play a game")
+        print("0) Exit game  1) Play a game 2) Continue a Saved Game")
         user_input = input(" >> ")
 
         # 0. End game
@@ -47,7 +47,9 @@ class FourInARowGame:
             print("Enter name of Player Two.")
             self.moves.append(input(" >> "))
             self.play_game()
-            return
+        # 2. Load game
+        elif user_input == "2":
+            self.load_game()
         # Any other input.
         else:
             print("You need to make a valid choice.")
@@ -62,9 +64,15 @@ class FourInARowGame:
         while not self.winner():
             #check which players turn it is
             #if it is a player (I.E. not "Computer") ask user to make a move.
-
             player = self.moves[(len(self.moves))%2]
+            if player == self.moves[0]:
+                opponent = self.moves[1]
+            else:
+                opponent = self.moves[0]
+
             if player == "Computer":
+                if opponent == "Computer":
+                    input("Press <Enter> to continue.")
                 move = self.computer.make_move(player, self.full_columns())
             else:
                 move = self.user.make_move(player, self.full_columns())
@@ -118,6 +126,41 @@ class FourInARowGame:
         with open("save4.json",mode="w", encoding="UTF-8") as outfile:
             json.dump(saved_games, outfile)
 
+    def load_game(self):
+        """
+        Lets the user pick up the loaded game at the saved point.
+        """
+        self.moves = self.get_game_from_file()
+        self.play_game()
+
+    def get_game_from_file(self):
+        """
+        Allows the player to select a saved game and returns its moves
+        """
+        try:
+            with open("save4.json", encoding="UTF-8") as json_file:
+                saved_games = json.load(json_file)
+        except: # pylint: disable=bare-except
+            print("There are no saved games.")
+            self.start_game_menu()
+        index = 0
+        for moves in saved_games:
+            player_1 = moves[0]
+            player_2 = moves[1]
+            nr_of_moves = len(moves)
+            print(f"{index}) - {player_1} vs {player_2}, {nr_of_moves} moves made.")
+            index += 1
+        choice = -1
+        while choice < 0:
+            print(f"Please choose game to continue/watch (0-{len(saved_games) - 1}).")
+            choice = input(" >> ")
+            try:
+                choice = int(choice)
+                if choice > 9:
+                    choice = -1
+            except: # pylint: disable=bare-except
+                choice = -1
+        return saved_games[choice]
 
     def full_columns(self):
         """
@@ -154,30 +197,15 @@ class FourInARowGame:
         for row in board:
             this_max = self.count_row(row)
             max_in_row = max(max_in_row, this_max)
-            #if this_max == 4:
-                #print("Debug - Victory flagged in column")
-                #print(row)
-        #Rows
         for row in self.transpose(board):
             this_max = self.count_row(row)
             max_in_row = max(max_in_row, this_max)
-            #if this_max == 4:
-                #print("Debug - Victory flagged in row")
-                #print(row)
-        #'Upwards' diagonals
         for row in self.up_diagonal(board):
             this_max = self.count_row(row)
             max_in_row = max(max_in_row, this_max)
-            #if this_max == 4:
-                #print("Debug - Victory flagged in up diagonal")
-                #print(row)
-        #'Downwards' diagonals
         for row in self.down_diagonal(board):
             this_max = self.count_row(row)
             max_in_row = max(max_in_row, this_max)
-            #if this_max == 4:
-                #print("Debug - Victory flagged in down diagonal")
-                #print(row)
         return max_in_row
 
     def transpose(self, matrix):
@@ -299,11 +327,10 @@ class User:
         """
         move = -1
         while move < 0:
-            print(f"{name},  enter a move (1-7), undo last move (8), save game (9)")
-            print(" or return to start menu (0) (end game):")
+            print(f"{name},  enter a move 1-7), undo last move 8),")
+            print("  save game 9) or return to start menu 0).")
             try:
                 move = int(input(" >> "))
-                print(f"Debug - move = {move}, type = {type(move)}")
                 if move == 9:
                     print("Trying to save the game.")
                     self.game.save_game()
@@ -347,9 +374,7 @@ class Computer:
                     best_moves.append(move)
                 elif move_value == best_value:
                     best_moves.append(move)
-        #print(f"Debug - Best moves: {best_moves}")
         move = best_moves[random.randint(0, len(best_moves) - 1)]
-        #print(f"Debug - Best value: {best_value}")
         print(f"{name} places a tile in column {move}")
         return move
 
@@ -403,30 +428,18 @@ class Computer:
         for column in my_board:
             evaluation = self.evaluate_row(column, my_tile)
             if evaluation:
-                #print("Debug -  ")
-                #print(f"Debug - Column: {evaluation}")
-                #print(column)
                 return_value += self.evaluate_row(column, my_tile)
         for row in self.game.transpose(my_board):
             evaluation = self.evaluate_row(row, my_tile)
             if evaluation:
-                #print("Debug -  ")
-                #print(f"Debug - Row: {evaluation}")
-                #print(row)
                 return_value += evaluation
         for row in self.game.up_diagonal(my_board):
             evaluation = self.evaluate_row(row, my_tile)
             if evaluation:
-                #print("Debug -  ")
-                #print(f"Debug - Up Diagonal: {evaluation}")
-                #print(row)
                 return_value += evaluation
         for row in self.game.down_diagonal(my_board):
             evaluation = self.evaluate_row(row, my_tile)
             if evaluation:
-                #print("Debug -  ")
-                #print(f"Debug - Down Diagonal: {evaluation}")
-                #print(row)
                 return_value += evaluation
         return return_value
 
@@ -448,28 +461,16 @@ class Computer:
                 open_tile += 1
                 if last_tile == my_tile:
                     value_change = self.calculate_row_value(1, open_tile, my_in_line)
-                    #if value_change != 0:
-                        #print(f"Debug - valuechange of row: {-value_change}")
-                        #print(f"Debug - Me: {my_tile}, Line: {my_in_line}, End:{open_tile}")
-                        #print(row)
                     row_value -= value_change
                     my_in_line = 0
                 elif last_tile == your_tile:
                     value_change = self.calculate_row_value(-4, open_tile, yours_in_line)
-                    #if value_change != 0:
-                        #print(f"Debug - valuechange of row: {-value_change}")
-                        #print(f"Debug - Me: {my_tile}, Line: {my_in_line}, End:{open_tile}")
-                        #print(row)
                     row_value -= value_change
                     yours_in_line = 0
             elif tile == my_tile:
                 my_in_line += 1
                 if last_tile == your_tile:
                     value_change = self.calculate_row_value(-4, open_tile, yours_in_line)
-                    #if value_change != 0 :
-                        #print(f"Debug - valuechange of row: {-value_change}")
-                        #print(f"Debug - Me: {my_tile}, Line: {my_in_line}, End:{open_tile}")
-                        #print(row)
                     row_value -= value_change
                     yours_in_line = 0
                     open_tile = 0
@@ -477,10 +478,6 @@ class Computer:
                 yours_in_line += 1
                 if last_tile == my_tile:
                     value_change = self.calculate_row_value(1, open_tile, my_in_line)
-                    #if value_change != 0 :
-                        #print(f"Debug - valuechange of row: {-value_change}")
-                        #print(f"Debug - Me: {my_tile}, Line: {my_in_line}, End:{open_tile}")
-                        #print(row)
                     row_value -= value_change
                     my_in_line = 0
                     open_tile = 0
@@ -488,18 +485,9 @@ class Computer:
             open_tile = min(1, open_tile)
             if tile == my_tile:
                 value_change = self.calculate_row_value(1, open_tile, my_in_line)
-                #if value_change != 0 :
-                    #print(f"Debug - valuechange of row: {-value_change}")
-                    #print(f"Debug - Me: {my_tile}, Line: {my_in_line}, End:{open_tile}")
-                    #print(row)
                 row_value -= value_change
             elif tile == your_tile:
-
                 value_change = self.calculate_row_value(-4, open_tile, yours_in_line)
-                #if value_change != 0 :
-                    #print(f"Debug - valuechange of row: {-value_change}")
-                    #print(f"Debug - Me: {my_tile}, Line: {my_in_line}, End:{open_tile}")
-                    #print(row)
                 row_value -= value_change
         return row_value
 
@@ -519,10 +507,10 @@ def main():
     Main function
     """
     game = FourInARowGame()
-    #game.welcome()
-    #game.play_game()
-    game.moves= ["Fredrik - O", "Computer", 4, 4, 4, 4, 2, 4, 7, 6, 1]
-    game.load_game()
+    game.welcome()
+    game.play_game()
+    #game.moves= ["Fredrik - O", "Computer", 4, 4, 4, 4, 2, 4, 7, 6, 1]
+    #game.load_game()
 
 
 main()
