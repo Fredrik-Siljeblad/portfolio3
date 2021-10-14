@@ -1,0 +1,23 @@
+
+
+
+            O
+            @
+            O
+   -------------------
+   1  2  3  4  5  6  7     8) 9) 0)
+Debug - Computer plays with @.
+Debug - Computer plays with @.
+Debug - Computer plays with @.
+Debug -
+Debug - Up Diagonal: -4
+['@', '@', ' ', ' ', ' ']
+Debug - Computer plays with @.
+Debug - Computer plays with @.
+Debug - Computer plays with @.
+Debug - Computer plays with @.
+Debug - Best moves: [3]
+Debug - Best value: 47
+Debug - Computer places a tile in column 3
+
+Here 3 & 5 ought to be just as good moves.
