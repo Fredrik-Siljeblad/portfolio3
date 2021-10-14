@@ -29,16 +29,19 @@ class FourInARowGame:
         Start menu of the game
         """
         print("Please pick one of the following choiches:")
-        print("0) End the game  1) Play the game.")
+        print("0) Exit game  1) Play a game")
         user_input = input("Enter a choice. >>")
 
         # 0. End game
         if user_input == "0":
             self.end_game()
             return
-        # 1. User vs User
-        # - Perhaps - if the name is "Computer" make the computer play.
+        # 1. Play game
+        # 2. - Perhaps - if the name is "Computer" make the computer play.
         elif user_input == "1":
+            print("If entering 'Computer' as name of either player the moves of")
+            print("that player will be made by the computer.")
+            self.moves.clear()
             self.moves.append(input("Enter name of Player One. >>"))
             self.moves.append(input("Enter name of Player Two. >>"))
             self.play_game()
@@ -53,7 +56,7 @@ class FourInARowGame:
         Ends the game
         """
         print("Goodbye, hope to see you again soon!")
-        return
+        quit()
 
     def full_columns(self):
         """
@@ -86,8 +89,27 @@ class FourInARowGame:
                 self.moves.append(move)
                 self.print_board(self.render_game(self.moves))
             else:
-                self.end_game()
+                self.start_game_menu()
                 break
+        self.end_of_game_menu()
+
+    def end_of_game_menu(self):
+        """
+        Menu that shows when the game is won. Allows to undo last move or return to start
+        """
+        print("The game is over, please make a choice:")
+        print("8) undo last move or 0) return to start menu")
+        choice = input(" >>")
+        while choice != "8" and choice != "0":
+            choice = input("Please enter '8' or '0' >>")
+        if choice == "8":
+            print("Debug - your choice: 8, undo and return to playing.")
+            self.undo_move()
+            self.play_game()
+        if choice == "0":
+            self.start_game_menu()
+
+
 
     def winner(self):
         """
@@ -269,7 +291,7 @@ class User:
         move = -1
         while move < 0:
             try:
-                print(f"{name},  make your move (1-7), 9 (undo last move) or 0 (end game): >>")
+                print(f"{name},  make your move (1-7), 8 (undo last move) or 0 (end game): >>")
                 move = int(input(" >>"))
                 if move > -1 and move < 9:
                     if is_full.count(move):
@@ -480,9 +502,9 @@ def main():
     Main function
     """
     game = FourInARowGame()
-    #game.welcome()
-    game.moves.append("Fredrik - O")
-    game.moves.append("Computer")
+    game.welcome()
+    #game.moves.append("Fredrik - O")
+    #game.moves.append("Computer")
     game.play_game()
     #game.print_row(["@", "@", "@", "@", "@"], 5)
     #matrix = [["00","01","02"], ["10","11","12"], ["20","21","22"], ["30","31","32"]]
@@ -500,9 +522,12 @@ def main():
 
 main()
 #remove teststuff from main()
-# To do - cleanup of code, undo-command, save & load.
+# To do - cleanup of code, save & load.
 # debug messages commented out, remove before deploying.
 # possibly rewrite the computer player logic a bit to see if I can take advandage
 # of recursion.
-# ----undo
-# does not redraw the game.
+# ----------------------------------------
+# Load game should be accessed from the Start-Menu.
+# When Selecting 0 in-game the user should be returned to the Start-Menu
+# When Game Ends (With either player winning, it should be possible to undo)
+#
