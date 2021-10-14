@@ -61,29 +61,70 @@ Moves can be undone.
 
   The game is represented as a ASCII-graphic in the command window, as follows:
 
- 
-                  O
-            @  O  @
-      1  2  3  4  5  6  7    8) 9) 0)
+   -------------------
 
-1-7 represents the columns 8) - 0) non-move commands that can be given, like undo last move, save game, return to start menu.
+
+         O     @
+         O  O  @
+         @  @  O      
+         @  O  O  O  @
+   -------------------
+   1  2  3  4  5  6  7
+The Game is over -Computer won!
+The game is over, please make a choice:
+8) Undo last move, 9) Save the game 0) Return to start menu.
 
 
 - __User playing the game__
 
 A human player gives input through entering single digit integers into the command line.
-
+Two players sharing a computer can play eachother, the game prompts each player to make a move.
 
 
 - __Computer playing the game__ 
 
-There is a computer player able to process the digital game representation and make a move. By selecting both player1 & player2
-as computers you can watch the computer play itself.
+There is a computer player able to process the digital game representation and make a move. At the 
+start of a game the user enters names for both players. If any player is named 'Computer' the computer
+player will make the moves for that player.
+
+The computer player plays a far from perfect game, but should make for a good opponent for anyone learning
+the game.
+
+
+- __Computer vs Computer__ 
+
+By naming both player one & player two as 'Computer' you can watch the computer play itself. A perfect 
+computer player would win every game if it makes first move.
+
+See: https://www.gamesver.com/is-connect-4-a-solved-game-what-does-that-even-mean/
+
+
+- __Saving Games__ 
+
+Any time during a game, including after the winning move has been made the game can be saved. Up to 10 
+games can be saved (a design choice to keep in line with the other menu choices of 0)-9). If an eleventh
+game is saved, the first one saved is dropped (FIFO).
+
+Games are saved as a nested list in json format.
+
+
+- __Loading Saved Games__
+
+Instead of starting a new game one can load one of the previously saved games to finish it.
+
+
+- __Watching Replays__
+
+Saved games can also be watched move-by-move as replays.
+
+
+- __Undo Move__
+At any time during play, including after the winning move has been made a player can choose to undo his last move.
+
 
 
 ### Features Left to Implement
 
-- Replay saved games
 
 - Different computer players
 
@@ -92,7 +133,40 @@ as computers you can watch the computer play itself.
 
 - By methodically going through the games menus I have managed to run through every option 
   without the program crashing.
-  
+
+  start_game_menu:
+
+  0) Exit game  1) Play a game 2) Load a Saved Game 3) Watch a Replay
+
+    0) Works!
+
+    1) Player vs Player
+        1)-7) Making Moves Works!
+        8) Undo Works!
+        9) Save Works!
+        0) Return to start_game_menu Works!
+
+    1) Player vs Computer
+        1)-7) Making Moves Works!
+        8) Undo Works!
+        9) Save Works!
+        0) Return to start_game_menu Works!
+
+    1) Computer vs Player
+        1)-7) Making Moves Works!
+        8) Undo Works!
+        9) Save Works!
+        0) Return to start_game_menu Works!
+
+    1) Computer vs Computer
+        8) Undo Works!
+        9) Save Works!
+        0) Return to start_game_menu Works!
+
+    2) Loading Saved Games Works!
+
+    3) Watching Replay Works!
+
 - By having the computer player play itself 100's of times I am reasonably confident that no
   moves in the game cause any problems.
 
@@ -106,6 +180,23 @@ as computers you can watch the computer play itself.
 
 - Pylance claims parts of the code in "view_replay()" is unreachable (probably due to me not
   using any kind of type annotation), but running the program shows it indeed is.
+
+- Entering a loop where one does not leave the game from the end_of_game_menu.
+
+Debug:
+['Fredrik', 'Computer', 4, 4, 4, 5, 5, 6, 2, 5, 5, 6, 1, 4, 6, 7]
+ >>8
+Debug:
+['Fredrik', 'Computer', 4, 4, 4, 5, 5, 6, 2, 5, 5, 6, 1, 4, 6, 7]
+ >>9
+Game Saved.
+Please pick one of the following choiches:
+0) Exit game  1) Play a game 2) Load a Saved Game 3) Watch a Replay
+ >> 0
+Goodbye, hope to see you again soon!
+ >>& C:/Users/fredr/AppData/Local/Microsoft/WindowsApps/python3.9.exe c:/Users/fredr/Desktop/portfolio3/run.py
+ 
+ Seems to be when one comes from the play_game menu back to start game menu.
 
 ## Deployment
 

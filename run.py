@@ -36,6 +36,7 @@ class FourInARowGame:
         # 0. End game
         if user_input == "0":
             self.end_game()
+            quit()
         # 1. Play game
         elif user_input == "1":
             print("If entering 'Computer' as name of either player the moves of")
@@ -334,8 +335,13 @@ class FourInARowGame:
 
     def undo_move(self):
         """
-        Removes the last two moves then prints the board again.
+        Turns the game back in time to the point before the last non-computer move was made.
         """
+        #check which players turn it is _to_make_a_move!!
+        print(self.moves)
+        if len(self.moves) < 4:
+            print("You have no moves to undo!")
+            return
         self.moves.pop()
         self.moves.pop()
         self.print_board(self.render_game(self.moves))
@@ -362,7 +368,7 @@ class User:
                     self.game.save_game()
                     print("Game Saved!")
                     move = -1
-                if move > -1 and move < 8:
+                if move > -1 and move < 9:
                     if is_full.count(move):
                         print(f"{name}, you cannot place more than six tiles in a column.")
                         move = -1
@@ -370,7 +376,7 @@ class User:
                         return int(move)
                 if move < 0 or move > 9:
                     move = -1
-                    print(f"{name}, please enter a number in the range of 0-8.")
+                    print("Please enter a single number.")
             except: # pylint: disable=bare-except
                 print("Please enter a single number.")
                 move = -1
@@ -533,11 +539,9 @@ def main():
     Main function
     """
     game = FourInARowGame()
-    game.welcome()
+    #game.welcome()
+    game.moves= ["Fredrik - O", "Computer", 4, 4, 4, 4, 2, 4, 7, 6, 1]
     game.play_game()
-    #game.moves= ["Fredrik - O", "Computer", 4, 4, 4, 4, 2, 4, 7, 6, 1]
-    #game.load_game()
-
 
 main()
 #remove teststuff from main()
