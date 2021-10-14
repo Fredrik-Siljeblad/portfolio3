@@ -66,7 +66,7 @@ Moves can be undone.
             @  O  @
       1  2  3  4  5  6  7    8) 9) 0)
 
-1-7 represents the columns 8) - 0) non-move commands that can be given, like undo last move, save game, help.
+1-7 represents the columns 8) - 0) non-move commands that can be given, like undo last move, save game, return to start menu.
 
 
 - __User playing the game__
@@ -82,8 +82,6 @@ as computers you can watch the computer play itself.
 
 
 ### Features Left to Implement
-
-- Saving games
 
 - Replay saved games
 

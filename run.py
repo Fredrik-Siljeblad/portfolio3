@@ -30,7 +30,7 @@ class FourInARowGame:
         Start menu of the game
         """
         print("Please pick one of the following choiches:")
-        print("0) Exit game  1) Play a game 2) Continue a Saved Game")
+        print("0) Exit game  1) Play a game 2) Load a Saved Game 3) Watch a Replay")
         user_input = input(" >> ")
 
         # 0. End game
@@ -50,6 +50,9 @@ class FourInARowGame:
         # 2. Load game
         elif user_input == "2":
             self.load_game()
+        # 3. Watch replay
+        elif user_input == "3":
+            self.view_replay()
         # Any other input.
         else:
             print("You need to make a valid choice.")
@@ -161,6 +164,24 @@ class FourInARowGame:
             except: # pylint: disable=bare-except
                 choice = -1
         return saved_games[choice]
+
+    def view_replay(self):
+        """
+        Load a saved game from the save-file, and shows the replay one
+        move at a time
+        """
+        replay_moves = self.get_game_from_file()
+        replay = []
+        replay.append(replay_moves[0])
+        replay.append(replay_moves[1])
+        for index in range(2, len(replay_moves)-1):
+            player = replay[index%2]
+            column = replay_moves[index]
+            replay.append(column)
+            self.print_board(self.render_game(replay))
+            print(f"{player} plays column {column}.")
+            input("<Enter> to continue")
+        self.start_game_menu()
 
     def full_columns(self):
         """
