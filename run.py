@@ -1,7 +1,3 @@
-# Your code goes here.
-# You can delete these comments, but do not change the name of this file
-# Write your code to expect a terminal of 80 characters wide and 24 rows high
-
 """
 A python project for a command-line four-in-a-row game
 """
@@ -9,9 +5,10 @@ import sys
 import random
 import json
 
+
 class FourInARowGame:
     """
-    The main object of the game, handling the game board, the moves made and so forth.
+    The main object of the game, handling the board, moves, and so on.
     """
     def __init__(self):
         self.moves = []
@@ -31,30 +28,31 @@ class FourInARowGame:
         """
         self.moves.clear()
         print("Please pick one of the following choiches:")
-        print("0) Exit game  1) Play a game 2) Load a Saved Game 3) Watch a Replay")
-        user_input = input("Debug - start_game_menu1 >> ")
-        # 0. End game
-        if user_input == "0":
-            self.end_game()
-        # 1. Play game
-        elif user_input == "1":
-            print("If entering 'Computer' as name of either player the moves of")
-            print("that player will be made by the computer.")
-            print("Enter name of Player One.")
-            self.moves.append(input("Debug - start_game_menu2 player one >> "))
-            print("Enter name of Player Two.")
-            self.moves.append(input("Debug - start_game_menu2 player two >> "))
-            self.play_game()
-        # 2. Load game
-        elif user_input == "2":
-            self.load_game()
-        # 3. Watch replay
-        elif user_input == "3":
-            self.view_replay()
-        # Any other input.
-        else:
-            print("You need to make a valid choice.")
-            self.start_game_menu()
+        print("0) Exit game  1) Play 2) Load Game 3) Watch a Replay")
+        user_input = -1
+        while user_input < 0:
+            user_input = self.user.get_input()
+            # 0. End game
+            if user_input == 0:
+                self.end_game()
+            # 1. Play game
+            elif user_input == 1:
+                print("If entering 'Computer' as name of either player the")
+                print("moves of that player will be made by the computer.")
+                print("Enter name of Player One.")
+                self.moves.append(input(" >> "))
+                print("Enter name of Player Two.")
+                self.moves.append(input(" >> "))
+                self.play_game()
+            # 2. Load game
+            elif user_input == 2:
+                self.load_game()
+            # 3. Watch replay
+            elif user_input == 3:
+                self.view_replay()
+            # Any other input.
+            else:
+                print("You need to make a valid choice.")
 
     def play_game(self):
         """
@@ -65,7 +63,7 @@ class FourInARowGame:
         # if the game is not over
         while not self.winner():
             # check which players turn it is
-            player = self.moves[(len(self.moves))%2]
+            player = self.moves[(len(self.moves)) % 2]
             if player == self.moves[0]:
                 opponent = self.moves[1]
             else:
@@ -76,7 +74,8 @@ class FourInARowGame:
                 if opponent == "Computer":
                     input("Press <Enter> to continue.")
                 # Append computers move to moves & print the board
-                self.moves.append(self.computer.make_move(player, self.full_columns()))
+                self.moves.append(
+                    self.computer.make_move(player, self.full_columns()))
                 self.print_board(self.render_game(self.moves))
             else:
                 move = self.user.make_move(player, self.full_columns())
@@ -89,26 +88,27 @@ class FourInARowGame:
                 elif move == 0:
                     # clear players & moves and go to start menu.
                     self.moves.clear()
-                    self.start_game_menu() #THIS MIGHT BE WHERE THE PROBLEM IS!
-                    #after the start_game_menu we get into the while loop again - with no winner!
+                    self.start_game_menu()
                 else:
-                    # the user have made a valid move, append it to moves & print board
+                    # the user have made a valid move, append it to
+                    # moves & print board
                     self.moves.append(move)
                     self.print_board(self.render_game(self.moves))
         self.end_of_game_menu()
 
     def end_of_game_menu(self):
         """
-        Menu that shows when the game is won. Allows to undo last move or return to start
+        Menu that shows when the game is won. Allows to undo last move
+        or return to start
         """
         if self.moves[0] == "Computer" and self.moves[1] == "Computer":
-            choices = "9) Save & Exit the game 0) Return to start menu."
+            choices = "9) Save & End Game 0) Return to Start."
         else:
-            choices = "8) Undo last move, 9) Save & Exit the game 0) Return to start menu."
+            choices = "8) Undo move, 9) Save & End game 0) Return to Start."
         print("The game is over, please make a choice:")
         print(choices)
         choice = -1
-        while choice < 8 :
+        while choice < 8:
             choice = self.user.get_input()
             if choice == 8:
                 # No undo in computer vs computer games.
@@ -138,8 +138,6 @@ class FourInARowGame:
         """
         print("Goodbye, hope to see you again soon!")
         sys.exit()
-        #once a game is won - by either player - going here sends you back to
-        #start_game_menu.
 
     def save_game(self):
         """
@@ -149,12 +147,12 @@ class FourInARowGame:
         try:
             with open("save4.json", encoding="UTF-8") as json_file:
                 saved_games = json.load(json_file)
-        except: # pylint: disable=bare-except
+        except:  # pylint: disable=bare-except
             saved_games = []
         saved_games.append(self.moves)
         while len(saved_games) > 10:
             saved_games.pop(0)
-        with open("save4.json",mode="w", encoding="UTF-8") as outfile:
+        with open("save4.json", mode="w", encoding="UTF-8") as outfile:
             json.dump(saved_games, outfile)
         print("Game Saved!")
 
@@ -175,7 +173,7 @@ class FourInARowGame:
         replay.append(replay_moves[0])
         replay.append(replay_moves[1])
         for index in range(2, len(replay_moves)-1):
-            player = replay[index%2]
+            player = replay[index % 2]
             column = replay_moves[index]
             replay.append(column)
             self.print_board(self.render_game(replay))
@@ -190,25 +188,21 @@ class FourInARowGame:
         try:
             with open("save4.json", encoding="UTF-8") as json_file:
                 saved_games = json.load(json_file)
-        except: # pylint: disable=bare-except
+        except:  # pylint: disable=bare-except
             print("There are no saved games.")
             self.start_game_menu()
         index = 0
         for moves in saved_games:
-            player_1 = moves[0]
-            player_2 = moves[1]
+            pl_1 = moves[0]
+            pl_2 = moves[1]
             nr_of_moves = len(moves) - 2
-            print(f"{index}) - {player_1} vs {player_2}, {nr_of_moves} moves made.")
+            print(f"{index}) - {pl_1} vs {pl_2}, {nr_of_moves} moves made.")
             index += 1
         choice = -1
         while choice < 0:
             print(f"Please choose game to {msg} (0-{len(saved_games) - 1}).")
-            choice = input("Debug - get_game_from_file1 >> ")
-            try:
-                choice = int(choice)
-                if choice > len(saved_games) - 1:
-                    choice = -1
-            except: # pylint: disable=bare-except
+            choice = self.user.get_input()
+            if choice > len(saved_games) - 1:
                 choice = -1
         return saved_games[choice]
 
@@ -217,7 +211,7 @@ class FourInARowGame:
         Returns a list of columns with 6 tiles in them.
         """
         is_full = []
-        for column in range(1,7):
+        for column in range(1, 7):
             if self.moves.count(column) > 5:
                 is_full.append(column)
         return is_full
@@ -233,7 +227,7 @@ class FourInARowGame:
         # if there's 4 in a row, the last player to place a
         # tile is the winner
         if self.count_rows(self.render_game(self.moves)) == 4:
-            winner = self.moves[(1 + len(self.moves))%2]
+            winner = self.moves[(1 + len(self.moves)) % 2]
             print(f"The Game is over - {winner} won!")
             return 1
         # if there's no winner and all positions on the board
@@ -249,7 +243,6 @@ class FourInARowGame:
         Counts tiles in a row in columns, rows and both diagonals.
         """
         max_in_row = 0
-        #Columns
         for row in board:
             this_max = self.count_row(row)
             max_in_row = max(max_in_row, this_max)
@@ -272,7 +265,8 @@ class FourInARowGame:
 
     def up_diagonal(self, matrix):
         """
-        returns a 2D-list that contains the lower-left to upper-right diagonals of matrix
+        returns a 2D-list that contains the lower-left to upper-right
+        diagonals of matrix
         """
         m_coln = len(matrix)
         m_rown = len(matrix[0])
@@ -289,7 +283,8 @@ class FourInARowGame:
 
     def down_diagonal(self, matrix):
         """
-        returns a 2D-list that contains the upper-left to lower-right diagonals of matrix
+        returns a 2D-list that contains the upper-left to lower-right
+        diagonals of matrix
         """
         m_coln = len(matrix)
         m_rown = len(matrix[0])
@@ -306,7 +301,8 @@ class FourInARowGame:
 
     def count_row(self, row):
         """
-        Function that returns the maximum number of continous tiles in a given row
+        Function that returns the maximum number of continous
+        tiles in a given row
         """
         last_tile = " "
         max_in_row = 0
@@ -326,21 +322,22 @@ class FourInARowGame:
 
     def render_game(self, my_moves):
         """
-        takes the list of moves and turns it into a list of tiles placed on a board.
+        takes the list of moves and turns it into a list of tiles
+        placed on a board.
         """
-        #Clean the board, a list of 7 lists, each representing a column.
+        # Clean the board, a list of 7 lists, each representing a column.
         my_board = [[], [], [], [], [], [], []]
 
-        #Iterate throught the moves, alternate between the player tiles
+        # Iterate throught the moves, alternate between the player tiles
         # and place them in the correct column.
         if len(my_moves) > 2:
             for move_nr in range(2, len(my_moves), 1):
-                if move_nr%2 == 1:
+                if move_nr % 2 == 1:
                     tile = "@"
                 else:
                     tile = "O"
                 my_board[my_moves[move_nr] - 1].append(tile)
-        #Then we want to fill the rest of the board with " "
+        # Then we want to fill the rest of the board with " "
         for column in my_board:
             while len(column) < 7:
                 column.append(" ")
@@ -364,9 +361,10 @@ class FourInARowGame:
 
     def undo_move(self):
         """
-        Turns the game back in time to the point before the last non-computer move was made.
+        Turns the game back in time to the point before the last
+        non-computer move was made.
         """
-        #check which players turn it is _to_make_a_move!!
+        # check which players turn it is _to_make_a_move!!
         print(self.moves)
         if len(self.moves) < 4:
             print("You have no moves to undo!")
@@ -402,10 +400,10 @@ class User:
         choice = -1
         while choice < 0:
             try:
-                choice = int(input("Debug user.get_input() >> "))
+                choice = int(input(" >> "))
                 if choice > 9:
                     choice = -1
-            except: # pylint: disable=bare-except
+            except:  # pylint: disable=bare-except
                 print("Please enter a single number.")
                 choice = -1
         return choice
@@ -422,10 +420,9 @@ class Computer:
         """
         Returns a move (I.E an integer 1-7)
         """
-        #Version 2) Evaluate move:
         best_moves = []
-        best_value = 10000 #Should be enough to allow for one valid move
-        for move in range(1,8):
+        best_value = 10000  # Should be enough to allow for one valid move
+        for move in range(1, 8):
             if not is_full.count(move):
                 moves = self.game.moves.copy()
                 move_value = self.evaluate_move(move, moves)
@@ -439,178 +436,18 @@ class Computer:
         print(f"{name} places a tile in column {move}")
         return move
 
-    def make_move_recursive(self, name, is_full):
-        """
-        DEBUG the starting point of the computer players desicion
-        """
-        #get the moves list
-        my_moves = self.game.moves.copy()
-        #get all possible moves
-        possible_moves = []
-        for move in range(1, 8):
-            if my_moves.count(move) < 6:
-                possible_moves.append(move)
-        #is there a possible move that wins?
-        best_moves = []
-        for move in possible_moves:
-            if self.does_move_win(my_moves, move):
-                best_moves.append(move)
-        #then we return the list of winning moves!
-        if len(best_moves):
-            return best_moves
-        #otherwise we check if any of the possible moves means that 
-        #the opponen wins next turn!
-        for move in best_moves:
-
-                
-                    
-
-    def eval_move(self, moves, move, result):
-        """
-        DEBUG RECURSIVE SOLUTION TO MOVE EVALUATION
-        return a list with the best options for next move.
-        """
-        #get all possible moves
-        possible_moves = []
-        for move in range(1, 8):
-            if my_moves.count(move) < 6:
-                possible_moves.append(move)
-        #is there a possible move that wins?
-        best_moves = []
-        for move in possible_moves:
-            if self.does_move_win(my_moves, move):
-                best_moves.append(move)
-        #then we return the list of winning moves!
-        if len(best_moves):
-            return best_moves
-        #otherwise we check if any of the possible moves means that 
-        #the opponen wins next turn!
-        #for each possible move
-        for new_move in possible_moves:
-            #create a new_moves.
-            new_moves = my_moves.copy()
-            #append the new_move
-            new_moves.append(new_move)
-            #check if all
-            new_possible_moves
-
-        
-    def does_move_win(self, moves, move):
-        """
-        Returns 1 if the proposed move creates four in a row, otherwise 0
-        """
-        #which tile do we place
-        if len(moves):
-            this_tile = "O"
-        else:
-            this_tile = "@"
-        #calculate column and row for where this tile ends up
-        my_col = move-1
-        my_row = moves.count(move)
-        moves.append(move)
-        my_board = self.game.render_game(moves)
-        star = self.get_star(my_board, my_col, my_row)
-        win = 0
-        for row in star:
-            win += four_in_row(row, this_tile)
-        return min(win, 1)
-
-    def get_star(self, my_board, my_col, my_row):
-        """
-        returns a list of four lines going through the last tile placed.
-        'star' - because its four lines crossing one point.
-        """
-        star = [[], [], [], []]
-        #The vertical line
-        star[0] = my_board[my_col]
-        #The horizontal line
-        for column in my_board:
-            star[1].append(column[my_row])
-        #The upward sloping line
-        dif = my_row - my_col
-        start_col = max(0, my_col- my_row)
-        for col in range(start_col, 7):
-            row = dif + col
-            if row < 6 and row > -1:
-                star[2].append(my_board[col][row])
-        #The downward sloping line
-        dif = my_row - my_col
-        start_col = max(0, my_col- my_row)
-        for col in range(start_col, 7):
-            row = dif - col
-            if row < 6 and row > -1:
-                star[3](my_board[col][row])
-        return star
-
-    def four_in_row(self, row, this_tile):
-        """
-        Returns 1 if the propose row contains 4 player tiles in a row
-        """
-        if self.n_in_row(row, this_tile) > 3:
-            return 1
-        else:
-            return 0
-
-    def n_in_row(self, row, my_tile):
-        """
-        Returns the maximum number of connected my_tiles in row.
-        """
-        in_row = 0
-        n_in_row = 0
-        for test_tile in row:
-            if test_tile == my_tile:
-                in_row += 1
-            else:
-                n_in_row = max(in_row, n_in_row)
-                in_row = 0
-            return n_in_row
-
-
-
-    def evaluate_move2(self, move, moves, move_values):
-        """
-        DEBUG UNUSED AND SHOULD PROBABLY BE REMOVED
-        An attempt at using recursion to find the best move
-        As of now not used
-        """
-        #to use this change the evaluation numbers to where 0 is average.
-        my_moves = moves.copy()
-        my_moves.append(move)
-        my_move_values = move_values.copy()
-        #move_values[0] = number of future moves we're looking at.
-        for index in range(1,8):
-            if my_move_values[index] == 10000:
-                #Do not pursue this move.
-                pass
-            elif my_move_values[index] == -10000:
-                #This branch leads to victory
-                return my_move_values
-            else:
-                move_evaluation = self.evaluate_move(index, my_moves)
-                if move_evaluation == -1:
-                    if my_move_values[0]%2:
-                        #Opponent wins
-                        my_move_values[index] = 10000
-                    else:
-                        #I win
-                        my_move_values[index] = -10000
-                        return my_move_values
-                else:
-                    my_move_values[index] += move_evaluation
-                self.evaluate_move2(index, my_moves, move_values)
-
     def evaluate_move(self, move, moves):
         """
         returns an evaluation of a move. Lower is better
         """
-        if len(moves)%2:
+        if len(moves) % 2:
             my_tile = "@"
         else:
             my_tile = "O"
         moves.append(move)
         my_board = self.game.render_game(moves)
         in_line = self.game.count_rows(my_board)
-        #If this move wins me the game right away return -1
+        # If this move wins me the game right away return -1
         if in_line == 4:
             return -1
         return_value = 50
@@ -650,34 +487,40 @@ class Computer:
             if tile == " ":
                 open_tile += 1
                 if last_tile == my_tile:
-                    value_change = self.calculate_row_value(1, open_tile, my_in_line)
+                    value_change = self.calculate_row_value(
+                        1, open_tile, my_in_line)
                     row_value -= value_change
                     my_in_line = 0
                 elif last_tile == your_tile:
-                    value_change = self.calculate_row_value(-4, open_tile, yours_in_line)
+                    value_change = self.calculate_row_value(
+                        -4, open_tile, yours_in_line)
                     row_value -= value_change
                     yours_in_line = 0
             elif tile == my_tile:
                 my_in_line += 1
                 if last_tile == your_tile:
-                    value_change = self.calculate_row_value(-4, open_tile, yours_in_line)
+                    value_change = self.calculate_row_value(
+                        -4, open_tile, yours_in_line)
                     row_value -= value_change
                     yours_in_line = 0
                     open_tile = 0
             else:
                 yours_in_line += 1
                 if last_tile == my_tile:
-                    value_change = self.calculate_row_value(1, open_tile, my_in_line)
+                    value_change = self.calculate_row_value(
+                        1, open_tile, my_in_line)
                     row_value -= value_change
                     my_in_line = 0
                     open_tile = 0
             last_tile = tile
             open_tile = min(1, open_tile)
             if tile == my_tile:
-                value_change = self.calculate_row_value(1, open_tile, my_in_line)
+                value_change = self.calculate_row_value(
+                    1, open_tile, my_in_line)
                 row_value -= value_change
             elif tile == your_tile:
-                value_change = self.calculate_row_value(-4, open_tile, yours_in_line)
+                value_change = self.calculate_row_value(
+                    -4, open_tile, yours_in_line)
                 row_value -= value_change
         return row_value
 
@@ -692,6 +535,7 @@ class Computer:
             value = 1 * open_ends * open_ends * mine
         return value
 
+
 def main():
     """
     Main function
@@ -700,9 +544,3 @@ def main():
     game.welcome()
 
 main()
-#remove teststuff from main()
-# To do - cleanup of code, save & load.
-# debug messages commented out, remove before deploying.
-# possibly rewrite the computer player logic a bit to see if I can take advantage
-# of recursion.
-# ----------------------------------------
