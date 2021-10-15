@@ -5,7 +5,7 @@
 """
 A python project for a command-line four-in-a-row game
 """
-
+import sys
 import random
 import json
 
@@ -32,7 +32,7 @@ class FourInARowGame:
         self.moves.clear()
         print("Please pick one of the following choiches:")
         print("0) Exit game  1) Play a game 2) Load a Saved Game 3) Watch a Replay")
-        user_input = input(" >> ")
+        user_input = input("Debug - start_game_menu1 >> ")
         # 0. End game
         if user_input == "0":
             self.end_game()
@@ -41,9 +41,9 @@ class FourInARowGame:
             print("If entering 'Computer' as name of either player the moves of")
             print("that player will be made by the computer.")
             print("Enter name of Player One.")
-            self.moves.append(input(" >> "))
+            self.moves.append(input("Debug - start_game_menu2 player one >> "))
             print("Enter name of Player Two.")
-            self.moves.append(input(" >> "))
+            self.moves.append(input("Debug - start_game_menu2 player two >> "))
             self.play_game()
         # 2. Load game
         elif user_input == "2":
@@ -91,23 +91,32 @@ class FourInARowGame:
         Menu that shows when the game is won. Allows to undo last move or return to start
         """
         print("The game is over, please make a choice:")
-        print("8) Undo last move, 9) Save the game 0) Return to start menu.")
+        print("8) Undo last move, 9) Save & Exit the game 0) Return to start menu.")
         choice = -1
         while choice < 0 :
             try:
-                choice = int(input(" >>"))
+                choice = int(input("Debug - end_of_game_menu >> "))
                 if choice == 8:
+                    # Undo each players last move.
                     self.undo_move()
                     self.play_game()
                 elif choice == 9:
+                    # Saves game, clears moves and returns to start menu
                     self.save_game()
                     print("Game Saved.")
+                    self.moves.clear()
                     self.start_game_menu()
                 elif choice == 0:
+                    # Clears moves, then return to start menu.
+                    self.moves.clear()
                     self.start_game_menu()
                 else:
+                    # No valid choice were made
+                    print("Valid choices are: 8) Undo, 9) Save and 0) Exit")
                     choice = -1
             except: # pylint: disable=bare-except
+                # Input could not be made into an integer.
+                print("Valid choices are: 8) Undo, 9) Save and 0) Exit")
                 choice = -1
 
     def end_game(self):
@@ -115,7 +124,9 @@ class FourInARowGame:
         Ends the game
         """
         print("Goodbye, hope to see you again soon!")
-        quit()
+        sys.exit()
+        #once a game is won - by either player - going here sends you back to
+        #start_game_menu.
 
     def save_game(self):
         """
@@ -178,7 +189,7 @@ class FourInARowGame:
         choice = -1
         while choice < 0:
             print(f"Please choose game to {msg} (0-{len(saved_games) - 1}).")
-            choice = input(" >> ")
+            choice = input("Debug - get_game_from_file1 >> ")
             try:
                 choice = int(choice)
                 if choice > len(saved_games) - 1:
@@ -205,7 +216,7 @@ class FourInARowGame:
         # to save time we don't bother counting.
         if len(self.moves) < 10:
             return 0
-        # if there's 4 in a row, the last player to place a 
+        # if there's 4 in a row, the last player to place a
         # tile is the winner
         if self.count_rows(self.render_game(self.moves)) == 4:
             winner = self.moves[(1 + len(self.moves))%2]
@@ -366,7 +377,7 @@ class User:
             print(f"{name},  enter a move 1-7), undo last move 8),")
             print("  save game 9) or return to start menu 0).")
             try:
-                move = int(input(" >> "))
+                move = int(input("Debug - make_move1 >> "))
                 if move == 9:
                     print("Trying to save the game.")
                     self.game.save_game()
@@ -552,4 +563,3 @@ main()
 # possibly rewrite the computer player logic a bit to see if I can take advantage
 # of recursion.
 # ----------------------------------------
-#
