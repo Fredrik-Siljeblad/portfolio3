@@ -539,10 +539,8 @@ def main():
     Main function
     """
     game = FourInARowGame()
-    #game.welcome()
-    game.moves= ["Fredrik - O", "Computer", 4, 4, 4, 4, 2, 4, 7, 6, 1]
-    game.play_game()
-
+    game.welcome()
+    
 main()
 #remove teststuff from main()
 # To do - cleanup of code, save & load.
@@ -550,7 +548,4 @@ main()
 # possibly rewrite the computer player logic a bit to see if I can take advandage
 # of recursion.
 # ----------------------------------------
-# Load game should be accessed from the Start-Menu.
-# When Selecting 0 in-game the user should be returned to the Start-Menu
-# When Game Ends (With either player winning, it should be possible to undo)
 #
