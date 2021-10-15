@@ -62,61 +62,74 @@ class FourInARowGame:
         """
 
         self.print_board(self.render_game(self.moves))
+        # if the game is not over
         while not self.winner():
-            #check which players turn it is
+            # check which players turn it is
             player = self.moves[(len(self.moves))%2]
             if player == self.moves[0]:
                 opponent = self.moves[1]
             else:
                 opponent = self.moves[0]
+            # check which tile the player uses
             if player == "Computer":
+                # if two computer players, pause until the user hits enter.
                 if opponent == "Computer":
                     input("Press <Enter> to continue.")
-                move = self.computer.make_move(player, self.full_columns())
+                # Append computers move to moves & print the board
+                self.moves.append(self.computer.make_move(player, self.full_columns()))
+                self.print_board(self.render_game(self.moves))
             else:
                 move = self.user.make_move(player, self.full_columns())
-            if move == 8:
-                self.undo_move()
-            elif move == 0:
-                self.start_game_menu()
-                break
-            else:
-                self.moves.append(move)
-                self.print_board(self.render_game(self.moves))
-
+                if move == 8:
+                    # undo last pair of moves.
+                    self.undo_move()
+                elif move == 9:
+                    # save the game, then keep on playing.
+                    self.save_game()
+                elif move == 0:
+                    # clear players & moves and go to start menu.
+                    self.moves.clear()
+                    self.start_game_menu() #THIS MIGHT BE WHERE THE PROBLEM IS!
+                    #after the start_game_menu we get into the while loop again - with no winner!
+                else:
+                    # the user have made a valid move, append it to moves & print board
+                    self.moves.append(move)
+                    self.print_board(self.render_game(self.moves))
         self.end_of_game_menu()
 
     def end_of_game_menu(self):
         """
         Menu that shows when the game is won. Allows to undo last move or return to start
         """
+        if self.moves[0] == "Computer" and self.moves[1] == "Computer":
+            choices = "9) Save & Exit the game 0) Return to start menu."
+        else:
+            choices = "8) Undo last move, 9) Save & Exit the game 0) Return to start menu."
         print("The game is over, please make a choice:")
-        print("8) Undo last move, 9) Save & Exit the game 0) Return to start menu.")
+        print(choices)
         choice = -1
-        while choice < 0 :
-            try:
-                choice = int(input("Debug - end_of_game_menu >> "))
-                if choice == 8:
+        while choice < 8 :
+            choice = self.user.get_input()
+            if choice == 8:
+                # No undo in computer vs computer games.
+                if self.moves[0] == "Computer" and self.moves[1] == "Computer":
+                    choice = -1
+                else:
                     # Undo each players last move.
                     self.undo_move()
                     self.play_game()
-                elif choice == 9:
-                    # Saves game, clears moves and returns to start menu
-                    self.save_game()
-                    print("Game Saved.")
-                    self.moves.clear()
-                    self.start_game_menu()
-                elif choice == 0:
-                    # Clears moves, then return to start menu.
-                    self.moves.clear()
-                    self.start_game_menu()
-                else:
-                    # No valid choice were made
-                    print("Valid choices are: 8) Undo, 9) Save and 0) Exit")
-                    choice = -1
-            except: # pylint: disable=bare-except
-                # Input could not be made into an integer.
-                print("Valid choices are: 8) Undo, 9) Save and 0) Exit")
+            elif choice == 9:
+                # Saves game, clears moves and returns to start menu
+                self.save_game()
+                self.moves.clear()
+                self.start_game_menu()
+            elif choice == 0:
+                # Clears moves, then return to start menu.
+                self.moves.clear()
+                self.start_game_menu()
+            else:
+                # No valid choice were made
+                print(f"Valid choices are: {choices}")
                 choice = -1
 
     def end_game(self):
@@ -143,6 +156,7 @@ class FourInARowGame:
             saved_games.pop(0)
         with open("save4.json",mode="w", encoding="UTF-8") as outfile:
             json.dump(saved_games, outfile)
+        print("Game Saved!")
 
     def load_game(self):
         """
@@ -361,6 +375,7 @@ class FourInARowGame:
         self.moves.pop()
         self.print_board(self.render_game(self.moves))
 
+
 class User:
     """
     The human player object handles input from the console.
@@ -372,29 +387,28 @@ class User:
         """
         asks for input from user, validates it and returns the validated input
         """
-        move = -1
-        while move < 0:
-            print(f"{name},  enter a move 1-7), undo last move 8),")
-            print("  save game 9) or return to start menu 0).")
+        print(f"{name},  enter a move 1-7), undo last move 8),")
+        print("  save game 9) or return to start menu 0).")
+        choice = self.get_input()
+        while is_full.count(choice) > 0:
+            print(f"{name}, column {choice} is full, pick another move.")
+            choice = self.get_input()
+        return choice
+
+    def get_input(self):
+        """
+        returns a user input as an integer in the range 0-9
+        """
+        choice = -1
+        while choice < 0:
             try:
-                move = int(input("Debug - make_move1 >> "))
-                if move == 9:
-                    print("Trying to save the game.")
-                    self.game.save_game()
-                    print("Game Saved!")
-                    move = -1
-                if move > -1 and move < 9:
-                    if is_full.count(move):
-                        print(f"{name}, you cannot place more than six tiles in a column.")
-                        move = -1
-                    else:
-                        return int(move)
-                if move < 0 or move > 9:
-                    move = -1
-                    print("Please enter a single number.")
+                choice = int(input("Debug user.get_input() >> "))
+                if choice > 9:
+                    choice = -1
             except: # pylint: disable=bare-except
                 print("Please enter a single number.")
-                move = -1
+                choice = -1
+        return choice
 
 
 class Computer:
@@ -425,8 +439,137 @@ class Computer:
         print(f"{name} places a tile in column {move}")
         return move
 
+    def make_move_recursive(self, name, is_full):
+        """
+        DEBUG the starting point of the computer players desicion
+        """
+        #get the moves list
+        my_moves = self.game.moves.copy()
+        #get all possible moves
+        possible_moves = []
+        for move in range(1, 8):
+            if my_moves.count(move) < 6:
+                possible_moves.append(move)
+        #is there a possible move that wins?
+        best_moves = []
+        for move in possible_moves:
+            if self.does_move_win(my_moves, move):
+                best_moves.append(move)
+        #then we return the list of winning moves!
+        if len(best_moves):
+            return best_moves
+        #otherwise we check if any of the possible moves means that 
+        #the opponen wins next turn!
+        for move in best_moves:
+
+                
+                    
+
+    def eval_move(self, moves, move, result):
+        """
+        DEBUG RECURSIVE SOLUTION TO MOVE EVALUATION
+        return a list with the best options for next move.
+        """
+        #get all possible moves
+        possible_moves = []
+        for move in range(1, 8):
+            if my_moves.count(move) < 6:
+                possible_moves.append(move)
+        #is there a possible move that wins?
+        best_moves = []
+        for move in possible_moves:
+            if self.does_move_win(my_moves, move):
+                best_moves.append(move)
+        #then we return the list of winning moves!
+        if len(best_moves):
+            return best_moves
+        #otherwise we check if any of the possible moves means that 
+        #the opponen wins next turn!
+        #for each possible move
+        for new_move in possible_moves:
+            #create a new_moves.
+            new_moves = my_moves.copy()
+            #append the new_move
+            new_moves.append(new_move)
+            #check if all
+            new_possible_moves
+
+        
+    def does_move_win(self, moves, move):
+        """
+        Returns 1 if the proposed move creates four in a row, otherwise 0
+        """
+        #which tile do we place
+        if len(moves):
+            this_tile = "O"
+        else:
+            this_tile = "@"
+        #calculate column and row for where this tile ends up
+        my_col = move-1
+        my_row = moves.count(move)
+        moves.append(move)
+        my_board = self.game.render_game(moves)
+        star = self.get_star(my_board, my_col, my_row)
+        win = 0
+        for row in star:
+            win += four_in_row(row, this_tile)
+        return min(win, 1)
+
+    def get_star(self, my_board, my_col, my_row):
+        """
+        returns a list of four lines going through the last tile placed.
+        'star' - because its four lines crossing one point.
+        """
+        star = [[], [], [], []]
+        #The vertical line
+        star[0] = my_board[my_col]
+        #The horizontal line
+        for column in my_board:
+            star[1].append(column[my_row])
+        #The upward sloping line
+        dif = my_row - my_col
+        start_col = max(0, my_col- my_row)
+        for col in range(start_col, 7):
+            row = dif + col
+            if row < 6 and row > -1:
+                star[2].append(my_board[col][row])
+        #The downward sloping line
+        dif = my_row - my_col
+        start_col = max(0, my_col- my_row)
+        for col in range(start_col, 7):
+            row = dif - col
+            if row < 6 and row > -1:
+                star[3](my_board[col][row])
+        return star
+
+    def four_in_row(self, row, this_tile):
+        """
+        Returns 1 if the propose row contains 4 player tiles in a row
+        """
+        if self.n_in_row(row, this_tile) > 3:
+            return 1
+        else:
+            return 0
+
+    def n_in_row(self, row, my_tile):
+        """
+        Returns the maximum number of connected my_tiles in row.
+        """
+        in_row = 0
+        n_in_row = 0
+        for test_tile in row:
+            if test_tile == my_tile:
+                in_row += 1
+            else:
+                n_in_row = max(in_row, n_in_row)
+                in_row = 0
+            return n_in_row
+
+
+
     def evaluate_move2(self, move, moves, move_values):
         """
+        DEBUG UNUSED AND SHOULD PROBABLY BE REMOVED
         An attempt at using recursion to find the best move
         As of now not used
         """

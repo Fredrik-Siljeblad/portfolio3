@@ -127,6 +127,9 @@ At any time during play, including after the winning move has been made a player
 
 
 - Different computer players
+- Ability to change players, I.E. load a computer vs computer game, change one of the players to
+  a human player and use as a learning tool.
+
 
 
 ## Testing 
