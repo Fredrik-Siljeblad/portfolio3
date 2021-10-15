@@ -29,19 +29,17 @@ class FourInARowGame:
         """
         Start menu of the game
         """
+        self.moves.clear()
         print("Please pick one of the following choiches:")
         print("0) Exit game  1) Play a game 2) Load a Saved Game 3) Watch a Replay")
         user_input = input(" >> ")
-
         # 0. End game
         if user_input == "0":
             self.end_game()
-            quit()
         # 1. Play game
         elif user_input == "1":
             print("If entering 'Computer' as name of either player the moves of")
             print("that player will be made by the computer.")
-            self.moves.clear()
             print("Enter name of Player One.")
             self.moves.append(input(" >> "))
             print("Enter name of Player Two.")
@@ -203,17 +201,23 @@ class FourInARowGame:
         """
         Function to determine if the game is won
         """
-        if len(self.moves) < 2:
+        # if len(moves) < 10 there can be no winner
+        # to save time we don't bother counting.
+        if len(self.moves) < 10:
             return 0
-        if self.count_rows(self.render_game(self.moves)) < 4:
-            return 0
-        if len(self.moves) > 43:
-            print("The game is a draw!")
+        # if there's 4 in a row, the last player to place a 
+        # tile is the winner
+        if self.count_rows(self.render_game(self.moves)) == 4:
+            winner = self.moves[(1 + len(self.moves))%2]
+            print(f"The Game is over - {winner} won!")
+            return 1
+        # if there's no winner and all positions on the board
+        # are filled the game is a draw and over.
+        if len(self.moves) == 44:
+            print("The game is over - it was a draw!")
             return 1
         else:
-            winner = self.moves[(1 + len(self.moves))%2]
-            print(f"The Game is over -{winner} won!")
-            return 1
+            return 0
 
     def count_rows(self, board):
         """
@@ -540,12 +544,12 @@ def main():
     """
     game = FourInARowGame()
     game.welcome()
-    
+
 main()
 #remove teststuff from main()
 # To do - cleanup of code, save & load.
 # debug messages commented out, remove before deploying.
-# possibly rewrite the computer player logic a bit to see if I can take advandage
+# possibly rewrite the computer player logic a bit to see if I can take advantage
 # of recursion.
 # ----------------------------------------
 #
