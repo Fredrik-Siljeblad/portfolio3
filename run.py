@@ -40,9 +40,9 @@ class FourInARowGame:
                 print("If entering 'Computer' as name of either player the")
                 print("moves of that player will be made by the computer.")
                 print("Enter name of Player One.")
-                self.moves.append(input(" >> "))
+                self.moves.append(input(" >> \n"))
                 print("Enter name of Player Two.")
-                self.moves.append(input(" >> "))
+                self.moves.append(input(" >> \n"))
                 self.play_game()
             # 2. Load game
             elif user_input == 2:
@@ -72,7 +72,7 @@ class FourInARowGame:
             if player == "Computer":
                 # if two computer players, pause until the user hits enter.
                 if opponent == "Computer":
-                    input("Press <Enter> to continue.")
+                    input("Press <Enter> to continue.\n")
                 # Append computers move to moves & print the board
                 self.moves.append(
                     self.computer.make_move(player, self.full_columns()))
@@ -178,7 +178,7 @@ class FourInARowGame:
             replay.append(column)
             self.print_board(self.render_game(replay))
             print(f"{player} plays column {column}.")
-            input("<Enter> to continue")
+            input("<Enter> to continue\n")
         self.start_game_menu()
 
     def get_game_from_file(self, msg):
@@ -400,7 +400,7 @@ class User:
         choice = -1
         while choice < 0:
             try:
-                choice = int(input(" >> "))
+                choice = int(input(" >> \n"))
                 if choice > 9:
                     choice = -1
             except:  # pylint: disable=bare-except
