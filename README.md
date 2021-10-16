@@ -159,7 +159,8 @@ The linter I use in VS Code gives no errors or warnings.
 
 ## Deployment
 
-
+- The final code was deployed by following the steps of the Deploy Your Project video in
+  the Code Institute program.
 
 
 ## Credits 
