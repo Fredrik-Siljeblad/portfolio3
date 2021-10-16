@@ -112,25 +112,25 @@ repeat the same move again.
 
     0) Works!
 
-    1) Player vs Player
+    1) Player vs Player:
         1)-7) Making Moves Works!
         8) Undo Works!
         9) Save Works!
         0) Return to start_game_menu Works!
 
-    1) Player vs Computer
+    1) Player vs Computer:
         1)-7) Making Moves Works!
         8) Undo Works!
         9) Save Works!
         0) Return to start_game_menu Works!
 
-    1) Computer vs Player
+    1) Computer vs Player:
         1)-7) Making Moves Works!
         8) Undo Works!
         9) Save Works!
         0) Return to start_game_menu Works!
 
-    1) Computer vs Computer - end menu only, and no undo.
+    1) Computer vs Computer - end menu only, and no Undo:
 
         9) Save Works!
         0) Return to start_game_menu Works!
