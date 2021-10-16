@@ -106,31 +106,29 @@ repeat the same move again.
 - By methodically going through the games menus I have managed to run through every option 
   without the program crashing.
 
-  start_game_menu:
+ - 0) Exit game  1) Play a game 2) Load a Saved Game 3) Watch a Replay
 
-  0) Exit game  1) Play a game 2) Load a Saved Game 3) Watch a Replay
+ -  0) Works!
 
-    0) Works!
+ -  1) Player vs Player:
+       1)-7) Making Moves Works!
+       8) Undo Works!
+       9) Save Works!
+       0) Return to start_game_menu Works!
 
-    1) Player vs Player:
+  -  1) Player vs Computer:
         1)-7) Making Moves Works!
         8) Undo Works!
         9) Save Works!
         0) Return to start_game_menu Works!
 
-    1) Player vs Computer:
+ -   1) Computer vs Player:
         1)-7) Making Moves Works!
         8) Undo Works!
         9) Save Works!
         0) Return to start_game_menu Works!
 
-    1) Computer vs Player:
-        1)-7) Making Moves Works!
-        8) Undo Works!
-        9) Save Works!
-        0) Return to start_game_menu Works!
-
-    1) Computer vs Computer - end menu only, and no Undo:
+ -   1) Computer vs Computer - end menu only, and no Undo:
 
         9) Save Works!
         0) Return to start_game_menu Works!
