@@ -7,6 +7,8 @@ is to get four of your own tiles in a row either vertically, horizontally or dia
 
 This is a command-line version of the game, suitable to learn how to play or to entertain.
 
+Link to deployed game: https://p3-four-in-a-row.herokuapp.com/
+
 ## Features 
 
 A digital representation of the game.
@@ -28,20 +30,20 @@ Moves can be undone.
 
 - __A visual representation of the game.__
 
-  The game is represented as a ASCII-graphic in the command window, as follows:
+The game is represented as a ASCII-graphic in the command window, as follows:
 
-   -------------------
+    -------------------
 
 
-         O     @
-         O  O  @
-         @  @  O      
-         @  O  O  O  @
-   -------------------
-   1  2  3  4  5  6  7
-The Game is over -Computer won!
-The game is over, please make a choice:
-8) Undo last move, 9) Save the game 0) Return to start menu.
+          O     @
+          O  O  @
+          @  @  O      
+          @  O  O  O  @
+    -------------------
+    1  2  3  4  5  6  7
+    The Game is over -Computer won!
+    The game is over, please make a choice:
+    8) Undo last move, 9) Save the game 0) Return to start menu.
 
 
 - __User playing the game__
@@ -106,36 +108,35 @@ repeat the same move again.
 - By methodically going through the games menus I have managed to run through every option 
   without the program crashing.
 
- - 0) Exit game  1) Play a game 2) Load a Saved Game 3) Watch a Replay
+      0) Exit game  1) Play a game 2) Load a Saved Game 3) Watch a Replay
 
- -  0) Works!
+      0) Exit game Works!
 
- -  1) Player vs Player:
-       1)-7) Making Moves Works!
-       8) Undo Works!
-       9) Save Works!
-       0) Return to start_game_menu Works!
-
-  -  1) Player vs Computer:
-        1)-7) Making Moves Works!
+      1) Player vs Player:
+        1-7) Making Moves Works!
         8) Undo Works!
         9) Save Works!
         0) Return to start_game_menu Works!
 
- -   1) Computer vs Player:
-        1)-7) Making Moves Works!
+      1) Player vs Computer
+        1-7) Making Moves Works!
         8) Undo Works!
         9) Save Works!
         0) Return to start_game_menu Works!
 
- -   1) Computer vs Computer - end menu only, and no Undo:
-
+      1) Computer vs Player
+        1-7) Making Moves Works!
+        8) Undo Works!
         9) Save Works!
         0) Return to start_game_menu Works!
 
-    2) Loading Saved Games Works!
+      1) Computer vs Computer   end menu only, and no Undo.
+        9) Save Works!
+        0) Return to start_game_menu Works!!
 
-    3) Watching Replay Works!
+      2) Loading Saved Games Works!
+
+      3) Watching Replay Works!
 
 - By having the computer player play itself 100's of times I am reasonably confident that no
   moves in the game cause any problems.
@@ -157,8 +158,8 @@ The linter I use in VS Code gives no errors or warnings.
 
 ## Deployment
 
-- The final code was deployed by following the steps of the Deploy Your Project video in
-  the Code Institute program.
+- The code was deployed on Heroku.com by following the steps of the Deployment instruction
+  video in the Code Institure programme material.
 
 
 ## Credits 
