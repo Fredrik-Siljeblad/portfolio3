@@ -1,36 +1,4 @@
-![CI logo](https://codeinstitute.s3.amazonaws.com/fullstack/ci_logo_small.png)
 
-Welcome USER_NAME,
-
-This is the Code Institute student template for deploying your third portfolio project, the Python command-line project. The last update to this file was: **August 17, 2021**
-
-## Reminders
-
-* Your code must be placed in the `run.py` file
-* Your dependencies must be placed in the `requirements.txt` file
-* Do not edit any of the other files or your code may not deploy properly
-
-## Creating the Heroku app
-
-When you create the app, you will need to add two buildpacks from the _Settings_ tab. The ordering is as follows:
-
-1. `heroku/python`
-2. `heroku/nodejs`
-
-You must then create a _Config Var_ called `PORT`. Set this to `8000`
-
-If you have credentials, such as in the Love Sandwiches project, you must create another _Config Var_ called `CREDS` and paste the JSON into the value field.
-
-Connect your GitHub repository and deploy as normal.
-
-## Constraints
-
-The deployment terminal is set to 80 columns by 24 rows. That means that each line of text needs to be 80 characters or less otherwise it will be wrapped onto a second line.
-
------
-Happy coding!
-
-----------------------------------------------------------------------
 # Four in a row
 
 The game four in a row is played on a standing board with seven columns of six rows where two players alternate dropping
@@ -49,111 +17,155 @@ Any number of users can watch two computer players play eachother.
 Games can be saved and watched again.
 Moves can be undone.
 
-### Existing Features
 
+### Existing Features
 
 
 - __A digital representation of the game.__
 
-  Each game is simply stored as a Python list consisting of player1, player2, column nr for move#1, column nr for move#2, ...
+  Each game is simply stored as a Python list consisting of player1, player2, column nr for move#1, 
+  column nr for move#2, ...
 
 - __A visual representation of the game.__
 
   The game is represented as a ASCII-graphic in the command window, as follows:
 
- 
-                  O
-            @  O  @
-      1  2  3  4  5  6  7    8) 9) 0)
+   -------------------
 
-1-7 represents the columns 8) - 0) non-move commands that can be given, like undo last move, save game, help.
+
+         O     @
+         O  O  @
+         @  @  O      
+         @  O  O  O  @
+   -------------------
+   1  2  3  4  5  6  7
+The Game is over -Computer won!
+The game is over, please make a choice:
+8) Undo last move, 9) Save the game 0) Return to start menu.
 
 
 - __User playing the game__
 
 A human player gives input through entering single digit integers into the command line.
-
+Two players sharing a computer can play eachother, the game prompts each player to make a move.
 
 
 - __Computer playing the game__ 
 
-There is a computer player able to process the digital game representation and make a move. By selecting both player1 & player2
-as computers you can watch the computer play itself.
+There is a computer player able to process the digital game representation and make a move. At the 
+start of a game the user enters names for both players. If any player is named 'Computer' the computer
+player will make the moves for that player.
+
+The computer player plays a far from perfect game, but should make for a good opponent for anyone learning
+the game.
+
+
+- __Computer vs Computer__ 
+
+By naming both player one & player two as 'Computer' you can watch the computer play itself. A perfect 
+computer player would win every game if it makes first move.
+
+See: https://www.gamesver.com/is-connect-4-a-solved-game-what-does-that-even-mean/
+
+
+- __Saving Games__ 
+
+Any time during a game, including after the winning move has been made the game can be saved. Up to 10 
+games can be saved (a design choice to keep in line with the other menu choices of 0)-9). If an eleventh
+game is saved, the first one saved is dropped (FIFO).
+
+Games are saved as a nested list in json format.
+
+
+- __Loading Saved Games__
+
+Instead of starting a new game one can load one of the previously saved games to finish it.
+
+
+- __Watching Replays__
+
+Saved games can also be watched move-by-move as replays.
+
+
+- __Undo Move__
+
+At any time during play, including after the winning move has been made a player can choose to undo his last move.
+Since the computer is rather unimaginative the undo move is disabled in computer vs computer games, it simply would
+repeat the same move again.
 
 
 ### Features Left to Implement
 
-- Saving games
-
-- Replay saved games
-
 - Different computer players
+- Ability to change players, I.E. load a computer vs computer game, change one of the players to
+  a human player and use as a learning tool.
 
 
 ## Testing 
 
-In this section, you need to convince the assessor that you have conducted enough testing to legitimately believe that the site works well. Essentially, in this part you will want to go over all of your project’s features and ensure that they all work as intended, with the project providing an easy and straightforward way for the users to achieve their goals.
+- By methodically going through the games menus I have managed to run through every option 
+  without the program crashing.
 
-In addition, you should mention in this section how your project looks and works on different browsers and screen sizes.
+  start_game_menu:
 
-You should also mention in this section any interesting bugs or problems you discovered during your testing, even if you haven't addressed them yet.
+  0) Exit game  1) Play a game 2) Load a Saved Game 3) Watch a Replay
 
-If this section grows too long, you may want to split it off into a separate file and link to it from here.
+    0) Works!
+
+    1) Player vs Player
+        1)-7) Making Moves Works!
+        8) Undo Works!
+        9) Save Works!
+        0) Return to start_game_menu Works!
+
+    1) Player vs Computer
+        1)-7) Making Moves Works!
+        8) Undo Works!
+        9) Save Works!
+        0) Return to start_game_menu Works!
+
+    1) Computer vs Player
+        1)-7) Making Moves Works!
+        8) Undo Works!
+        9) Save Works!
+        0) Return to start_game_menu Works!
+
+    1) Computer vs Computer - end menu only, and no undo.
+
+        9) Save Works!
+        0) Return to start_game_menu Works!
+
+    2) Loading Saved Games Works!
+
+    3) Watching Replay Works!
+
+- By having the computer player play itself 100's of times I am reasonably confident that no
+  moves in the game cause any problems.
 
 
 ### Validator Testing 
 
 - Python PEP8 - http://pep8online.com/
 
+The code checks out without remarks on the online PEP8 validator
+
+- Pylance - https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance
+
+The linter I use in VS Code gives no errors or warnings.
+
 ### Unfixed Bugs
 
-You will need to mention unfixed bugs and why they were not fixed. This section should include shortcomings of the frameworks or technologies used. Although time can be a big variable to consider, paucity of time and difficulty understanding implementation is not a valid reason to leave bugs unfixed. 
+- The final round of testing did not turn up any bugs.
 
 ## Deployment
 
-This section should describe the process you went through to deploy the project to a hosting platform (e.g. GitHub) 
 
-- The site was deployed to GitHub pages. The steps to deploy are as follows: 
-  - In the GitHub repository, navigate to the Settings tab 
-  - From the source section drop-down menu, select the Master Branch
-  - Once the master branch has been selected, the page will be automatically refreshed with a detailed ribbon display to indicate the successful deployment. 
-
-The live link can be found here - https://code-institute-org.github.io/love-running-2.0/index.html 
 
 
 ## Credits 
 
-In this section you need to reference where you got your content, media and extra help from. It is common practice to use code from other repositories and tutorials, however, it is important to be very specific about these sources to avoid plagiarism. 
-
-You can break the credits section up into Content and Media, depending on what you have included in your project. 
+- W3 schools for being such a great source of basic programming knowledge.
 
 ### Content 
 
-- The text for the Home page was taken from Wikipedia Article A
-- Instructions on how to implement form validation on the Sign Up page was taken from [Specific YouTube Tutorial](https://www.youtube.com/)
-- The icons in the footer were taken from [Font Awesome](https://fontawesome.com/)
-
-### Media
-
-- The photos used on the home and sign up page are from This Open Source site
-- The images used for the gallery page were taken from this other open source site
-
-
-Congratulations on completing your Readme, you have made another big stride in the direction of being a developer! 
-
-## Other General Project Advice
-
-Below you will find a couple of extra tips that may be helpful when completing your project. Remember that each of these projects will become part of your final portfolio so it’s important to allow enough time to showcase your best work! 
-
-- One of the most basic elements of keeping a healthy commit history is with the commit message. When getting started with your project, read through [this article](https://chris.beams.io/posts/git-commit/) by Chris Beams on How to Write  a Git Commit Message 
-  - Make sure to keep the messages in the imperative mood 
-
-- When naming the files in your project directory, make sure to consider meaningful naming of files, point to specific names and sections of content.
-  - For example, instead of naming an image used ‘image1.png’ consider naming it ‘landing_page_img.png’. This will ensure that there are clear file paths kept. 
-
-- Do some extra research on good and bad coding practices, there are a handful of useful articles to read, consider reviewing the following list when getting started:
-  - [Writing Your Best Code](https://learn.shayhowe.com/html-css/writing-your-best-code/)
-  - [HTML & CSS Coding Best Practices](https://medium.com/@inceptiondj.info/html-css-coding-best-practice-fadb9870a00f)
-  - [Google HTML/CSS Style Guide](https://google.github.io/styleguide/htmlcssguide.html#General)
-
-Getting started with your Portfolio Projects can be daunting, planning your project can make it a lot easier to tackle, take small steps to reach the final outcome and enjoy the process! 
+- The code is completely written by me.
